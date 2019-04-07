@@ -4,7 +4,7 @@
   "description": "Social Media Platform",
   "main": "src/server/index.js",
   "scripts": {
-    "build": "npm run lint && webpack --mode production",
+    "build": "npm run test && npm run lint && webpack --mode production",
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
