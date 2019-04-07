@@ -1,0 +1,27 @@
+{
+  "extends": ["airbnb", "eslint:recommended", "plugin:react/recommended"],
+  "plugins": ["prettier"],
+  "rules": {
+    "object-curly-spacing": ["error", "always"],
+    "no-extra-parens": "error",
+    "max-len": ["error", { "code": 120 }],
+    "no-multi-spaces": "error",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ]
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true,
+    "FormData": true,
+    "FileReader": true,
+    "Blob": true,
+    "navigator": true,
+    "fetch": true
+  },
+  "parser": "babel-eslint"
+}

@@ -4,11 +4,13 @@
   "description": "Social Media Platform",
   "main": "src/server/index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "npm run lint && webpack --mode production",
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src"
   },
   "dependencies": {
     "babel-polyfill": "*",
@@ -47,6 +49,9 @@
     "eslint-plugin-import": "*",
     "eslint-plugin-jsx-a11y": "*",
     "eslint-plugin-react": "*",
+    "prettier": "*",
+    "eslint-config-prettier": "*",
+    "eslint-plugin-prettier": "*",
     "file-loader": "*",
     "html-webpack-plugin": "*",
     "nodemon": "*",
