@@ -22,7 +22,8 @@
     "react": "*",
     "react-router-dom": "*",
     "react-bootstrap": "1.0.0-beta.6",
-    "bootstrap": "*"
+    "bootstrap": "*",
+    "prop-types": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

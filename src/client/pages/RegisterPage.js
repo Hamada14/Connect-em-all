@@ -1,32 +1,58 @@
-import React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import React, { Component } from 'react';
+import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 
-const RegisterPage = () => {
+export default class RegisterPage extends Component {
+  state = {};
+
+  render() {
     return (
       <React.Fragment>
-        <p> Heelo world</p>
-        <Form>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
-            <Form.Text className="text-muted">
-                We will never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-        
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
-          </Form.Group>
-          <Form.Group controlId="formBasicChecbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
+        <Container>
+          <Row>
+            <Col md={{ span: 6, offset: 3 }}>
+              <Card>
+                <Card.Header>Register</Card.Header>
+                <Card.Body>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label>Email address</Form.Label>
+                      <Form.Control type="email" placeholder="Email" />
+                    </Form.Group>
+                  
+                    <Form.Group>
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Confirm Password</Form.Label>
+                      <Form.Control type="password" placeholder="Confirm Password" />
+                    </Form.Group>
+                                      
+                    <Form.Group>
+                      <Form.Label>Full Name</Form.Label>
+                      <Form.Control placeholder="Full Name" />
+                    </Form.Group>
+                                      
+                    <Form.Group>
+                      <Form.Label>Birthday</Form.Label>
+                      <Form.Control type="date" />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Check type="checkbox" label="I agree to the terms and conditions" />
+                    </Form.Group>
+
+                  </Form>
+                  <Button variant="primary" type="submit">
+                      Submit
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </React.Fragment>
     )
+  }
 }
-
-export default RegisterPage;

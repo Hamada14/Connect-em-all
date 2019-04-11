@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import './app.css';
-import { HashRouter, Route, Link } from "react-router-dom";
+import { HashRouter, Route } from 'react-router-dom';
 
+import LoginPage from "./pages/LoginPage";
+import NewsFeedPage from './pages/NewsFeedPage';
 import RegisterPage from "./pages/RegisterPage";
+import SettingsPage from './pages/SettingsPage';
+
+import GenericNavigationBar from "./navigation/GenericNavigationBar";
 
 export default class App extends Component {
   state = {};
 
   settingsPage() {
-    return (
-      <p>Settings Page</p>
-    )
+    return <SettingsPage />
   }
 
-    newsFeedPage() {
-    return (
-      <p>News feed page</p>
-    )
+  newsFeedPage() {
+    return <NewsFeedPage />
   }
 
   registerPage() {
@@ -24,35 +25,28 @@ export default class App extends Component {
   }
 
   homePage() {
-    return (
-      <p>Welcome Home!</p>
-    )
+    return (<p>Welcome Home!</p>)
   }
 
   loginPage() {
-    return (
-      <p>Login page</p>
-    )
+    return <LoginPage />
   }
-
-  aboutPage() {
-    return (
-      <p>You are in the about</p>
-    )
-  }
-
 
   render() {
+    const router = (
+      <HashRouter>
+        <Route exact path="/" component={this.homePage} />
+        <Route exact path="/login" component={this.loginPage} />
+        <Route exact path="/register" component={this.registerPage} />
+        <Route exact path="/news_feed" component={this.newsFeedPage} />
+        <Route exact path="/settings" component={this.settingsPage} />
+      </HashRouter>
+    )
     return (
       <React.Fragment>
-        <HashRouter>
-          <Route exact path="/" component={this.homePage} />
-          <Route exact path="/login" component={this.loginPage} />
-          <Route exact path="/register" component={this.registerPage} />
-          <Route exact path="/news_feed" component={this.newsFeedPage} />
-          <Route exact path="/settings" component={this.settingsPage} />
-          <Route exact path="/about" component={this.aboutPage} />
-        </HashRouter>
+        <GenericNavigationBar />
+        <br />
+        {router}
       </React.Fragment>
     );
   }
