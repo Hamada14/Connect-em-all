@@ -1,23 +1,53 @@
 import React, { Component } from 'react';
 import './app.css';
-import ReactImage from './react.png';
+import { HashRouter, Route } from 'react-router-dom';
+
+import LoginPage from "./pages/LoginPage";
+import NewsFeedPage from './pages/NewsFeedPage';
+import RegisterPage from "./pages/RegisterPage";
+import SettingsPage from './pages/SettingsPage';
+
+import GenericNavigationBar from "./navigation/GenericNavigationBar";
 
 export default class App extends Component {
-  state = { username: null };
+  state = {};
 
-  componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
+  settingsPage() {
+    return <SettingsPage />
+  }
+
+  newsFeedPage() {
+    return <NewsFeedPage />
+  }
+
+  registerPage() {
+    return <RegisterPage />
+  }
+
+  homePage() {
+    return (<p>Welcome Home!</p>)
+  }
+
+  loginPage() {
+    return <LoginPage />
   }
 
   render() {
-    const { username } = this.state;
+    const router = (
+      <HashRouter>
+        <Route exact path="/" component={this.homePage} />
+        <Route exact path="/login" component={this.loginPage} />
+        <Route exact path="/register" component={this.registerPage} />
+        <Route exact path="/news_feed" component={this.newsFeedPage} />
+        <Route exact path="/settings" component={this.settingsPage} />
+      </HashRouter>
+    )
     return (
-      <div>
-        {username ? <h1>{`Hello Dear Friend ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
-      </div>
+      <React.Fragment>
+        <GenericNavigationBar />
+        <br />
+        {router}
+      </React.Fragment>
     );
   }
 }
