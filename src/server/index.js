@@ -23,6 +23,16 @@ app.use(session({
     }
 }));
 
+// middleware function to check for logged-in users
+var sessionChecker = (req, res, next) => {
+    if (req.session.user && req.cookies.user_sid) {
+        res.redirect('/dashboard');
+    } else {
+        next();
+    }    
+};
+
+
 app.use(express.static('dist'));
 app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
@@ -56,6 +66,7 @@ app.post('/api/login', (req, res) => {
                 birthdate: result[0].BIRTH_DATE
             };
             user = new User(newUser);
+            req.session.user = user;
             res.status(OK_STATUS_CODE);
             return res.send("Successful login");
         } else {
