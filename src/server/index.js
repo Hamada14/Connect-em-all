@@ -1,6 +1,7 @@
 const express = require('express');
 const os = require('os');
 const UserManager = require('./UserManager');
+
 const app = express();
 const User = require("./User")
 const cookieParser = require('cookie-parser');
@@ -15,22 +16,22 @@ app.use(cookieParser());
 
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
-    key: 'user_sid',
-    secret: 'secret_session',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 600000
-    }
+  key: 'user_sid',
+  secret: 'secret_session',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    expires: 600000
+  }
 }));
 
 // middleware function to check for logged-in users
 var sessionChecker = (req, res, next) => {
-    if (req.session.user && req.cookies.user_sid) {
-        res.redirect('/dashboard');
-    } else {
-        next();
-    }    
+  if (req.session.user && req.cookies.user_sid) {
+    res.redirect('/dashboard');
+  } else {
+    next();
+  }    
 };
 
 
@@ -38,41 +39,43 @@ app.use(express.static('dist'));
 app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
 app.post('/api/register', (req, res) => {
-    userManager = new UserManager();
-    successfullRegisteration = userManager.registerUser(req.user);
-    if(successfullRegisteration) {
-        res.status(OK_STATUS_CODE);
-        return res.send('Received a POST HTTP method');
-    } else {
-        res.status(ERROR_STATUS_CODE);
-        return res.send('Error registeraion: wrong email address')
-    }
+  const userManager = new UserManager();
+  const successfullRegisteration = true // userManager.registerUser(req.user);
+  const errors = []
+  if(successfullRegisteration) {
+    res.status(OK_STATUS_CODE);
+  } else {
+    res.status(ERROR_STATUS_CODE);
+  }
+  res.send({ errors: errors })
+  res.end()
 });
 
 
 app.post('/api/login', (req, res) => {
-    userManager = new UserManager();
-    jsonUser = req.user;
-    userManager.getUser(jsonUser.email)
+  userManager = new UserManager();
+  jsonUser = req.user;
+  userManager.getUser(jsonUser.email)
     .then(result => {
-        if(result && result[0].HASHED_PASSWORD === jsonUser.hashedPassword && result[0].SALT === jsonUser.passwordSalt) {
-            newUser = {
-                userName: result[0].FULL_NAME,
-                email: result[0].EMAIL,
-                hashedPassword: result[0].HASHED_PASSWORD,
-                passwordSalt: result[0].SALT,
-                birthdate: result[0].BIRTH_DATE
-            };
-            user = new User(newUser);
-            req.session.user = user;
-            res.status(OK_STATUS_CODE);
-            return res.send("Successful login");
-        } else {
-            res.status(ERROR_STATUS_CODE);
-            return res.send('Wrong email or password');
-        }
+      if(result && result[0].HASHED_PASSWORD === jsonUser.hashedPassword && result[0].SALT === jsonUser.passwordSalt) {
+        newUser = {
+          userName: result[0].FULL_NAME,
+          email: result[0].EMAIL,
+          hashedPassword: result[0].HASHED_PASSWORD,
+          passwordSalt: result[0].SALT,
+          birthdate: result[0].BIRTH_DATE
+        };
+        user = new User(newUser);
+        req.session.user = user;
+        res.status(OK_STATUS_CODE);
+        return res.send("Successful login");
+      } else {
+        res.status(ERROR_STATUS_CODE);
+        return res.send('Wrong email or password');
+      }
     }) 
 });
+
   
 // connection = db.connectToDatabase();
 

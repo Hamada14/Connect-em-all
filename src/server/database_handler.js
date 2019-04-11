@@ -2,50 +2,50 @@ var mysql = require('mysql');
 
 function connectToDatabase() {
     
-    var connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'moamen',
-        password: 'mysqlserver',
-        database: 'social_media_db'
-    });
+  var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'social_media_db'
+  });
 
-    connection.connect(function(err) {
-        if (err) {
-            console.log("ERROR CONNECTION");
-            throw err;
-        }
-        console.log("Connected!");
-    });
+  connection.connect(function(err) {
+    if (err) {
+      console.log("ERROR CONNECTION");
+      throw err;
+    }
+    console.log("Connected!");
+  });
 
-    return connection;
+  return connection;
 }
 
 function useDatabase(connection, databaseName) {
-    let sqlCommand = "USE " + databaseName + ";";
-    connection.query(sqlCommand, function (err, result) {
-        if (err) { 
-            console.log(err);
-            throw err;
-        }
-    });
+  let sqlCommand = "USE " + databaseName + ";";
+  connection.query(sqlCommand, function (err, result) {
+    if (err) { 
+      console.log(err);
+      throw err;
+    }
+  });
 }
 
 function creatUser(connection, user, databaseName) {
-    useDatabase(connection, databaseName);
-    sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWoRD, EMAIL, BIRTH_DATE) values (";
-    sqlAdd += "\'" + user.userName + "\',";
-    sqlAdd += "\'" + user.passwordSalt + "\',";
-    sqlAdd += "\'" + user.hashedPassword + "\',";
-    sqlAdd += "\'" + user.email + "\',";
-    sqlAdd += "\'" + user.birthdate + "\');";
-    // sqlAdd = "select * from USER";
-    console.log(sqlAdd);
-    connection.query(sqlAdd, function (err, result) {
-        if (err) { 
-            throw err;
-        }
-        console.log("User inserted successfully");
-    });
+  useDatabase(connection, databaseName);
+  sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWoRD, EMAIL, BIRTH_DATE) values (";
+  sqlAdd += "\'" + user.userName + "\',";
+  sqlAdd += "\'" + user.passwordSalt + "\',";
+  sqlAdd += "\'" + user.hashedPassword + "\',";
+  sqlAdd += "\'" + user.email + "\',";
+  sqlAdd += "\'" + user.birthdate + "\');";
+  // sqlAdd = "select * from USER";
+  console.log(sqlAdd);
+  connection.query(sqlAdd, function (err, result) {
+    if (err) { 
+      throw err;
+    }
+    console.log("User inserted successfully");
+  });
     
 }
 
