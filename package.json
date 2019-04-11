@@ -5,24 +5,23 @@
   "main": "src/server/index.js",
   "scripts": {
     "build": "npm run test && npm run lint && webpack --mode production",
-    "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "test": "jest",
+    "lint": "eslint src",
+    "server": "nodemon src/server/index.js",
+    "start": "npm run build && node src/server/index.js",
+    "test:coverage": "jest --coverage --colors",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --colors"
+    "test": "jest"
   },
   "dependencies": {
     "babel-polyfill": "*",
     "express": "*",
-    "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "react": "*"
   },
   "devDependencies": {
-    "react-hot-loader": "*",
     "@babel/core": "*",
     "@babel/plugin-proposal-class-properties": "*",
     "@babel/plugin-proposal-decorators": "*",
@@ -47,24 +46,25 @@
     "clean-webpack-plugin": "*",
     "concurrently": "*",
     "css-loader": "*",
-    "eslint": "*",
+    "enzyme-adapter-react-16": "*",
+    "enzyme": "*",
     "eslint-config-airbnb": "*",
+    "eslint-config-prettier": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-jsx-a11y": "*",
-    "eslint-plugin-react": "*",
-    "prettier": "*",
-    "eslint-config-prettier": "*",
     "eslint-plugin-prettier": "*",
+    "eslint-plugin-react": "*",
+    "eslint": "*",
     "file-loader": "*",
     "html-webpack-plugin": "*",
+    "jest": "*",
     "nodemon": "*",
+    "prettier": "*",
+    "react-hot-loader": "*",
     "style-loader": "*",
     "url-loader": "*",
-    "webpack": "*",
     "webpack-cli": "*",
     "webpack-dev-server": "*",
-    "enzyme": "*",
-    "enzyme-adapter-react-16": "*",
-    "jest": "*"
+    "webpack": "*"
   }
 }
