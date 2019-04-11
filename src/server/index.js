@@ -13,7 +13,7 @@ app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().use
 
 app.post('/api/register', (req, res) => {
     userManager = new UserManager();
-    successfullRegisteration = userManager.registerUser(req);
+    successfullRegisteration = userManager.registerUser(req.user);
     if(successfullRegisteration) {
         res.status(OK_STATUS_CODE);
         return res.send('Received a POST HTTP method');
