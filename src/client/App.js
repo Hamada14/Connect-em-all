@@ -1,23 +1,59 @@
 import React, { Component } from 'react';
 import './app.css';
-import ReactImage from './react.png';
+import { HashRouter, Route, Link } from "react-router-dom";
 
 export default class App extends Component {
-  state = { username: null };
+  state = {};
 
-  componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
+  settingsPage() {
+    return (
+      <p>Settings Page</p>
+    )
   }
 
-  render() {
-    const { username } = this.state;
+    newsFeedPage() {
     return (
-      <div>
-        {username ? <h1>{`Hello Dear Friend ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
-      </div>
+      <p>News feed page</p>
+    )
+  }
+
+  registerPage() {
+    return (
+      <p>Register Page</p>
+    )
+  }
+
+  homePage() {
+    return (
+      <p>Welcome Home!</p>
+    )
+  }
+
+  loginPage() {
+    return (
+      <p>Login page</p>
+    )
+  }
+
+  aboutPage() {
+    return (
+      <p>You are in the about</p>
+    )
+  }
+
+
+  render() {
+    return (
+      <React.Fragment>
+        <HashRouter>
+          <Route exact path="/" component={this.homePage} />
+          <Route exact path="/login" component={this.loginPage} />
+          <Route exact path="/register" component={this.registerPage} />
+          <Route exact path="/news_feed" component={this.newsFeedPage} />
+          <Route exact path="/settings" component={this.settingsPage} />
+          <Route exact path="/about" component={this.aboutPage} />
+        </HashRouter>
+      </React.Fragment>
     );
   }
 }

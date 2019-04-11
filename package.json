@@ -5,7 +5,7 @@
   "main": "src/server/index.js",
   "scripts": {
     "build": "npm run test && npm run lint && webpack --mode production",
-    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
+    "client": "webpack-dev-server --mode development --hot --devtool inline-source-map",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "lint:fix": "eslint --fix src",
     "lint": "eslint src",
@@ -19,7 +19,8 @@
     "babel-polyfill": "*",
     "express": "*",
     "react-dom": "*",
-    "react": "*"
+    "react": "*",
+    "react-router-dom": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

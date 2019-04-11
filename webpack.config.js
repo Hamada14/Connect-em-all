@@ -1,11 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
- 
+const webpack = require('webpack')
+
 const outputDirectory = 'dist';
 
 module.exports = {
-  entry: ['babel-polyfill', './src/client/index.js'],
+  entry: {
+    app: ["./src/client/index.js"]
+  },
   output: {
     path: path.join(__dirname, outputDirectory),
     filename: 'bundle.js'
@@ -45,6 +48,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
       favicon: './public/favicon.ico'
-    })
-  ]
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  watch: true,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: true
+  }
 };
