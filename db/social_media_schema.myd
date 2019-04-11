@@ -1,0 +1,148 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema social_media_db
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema social_media_db
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `social_media_db` ;
+USE `social_media_db` ;
+
+-- -----------------------------------------------------
+-- Table `social_media_db`.`USER`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `social_media_db`.`USER` (
+  `USER_ID` INT NOT NULL AUTO_INCREMENT,
+  `FULL_NAME` VARCHAR(60) NOT NULL,
+  `SALT` VARCHAR(60) NOT NULL,
+  `HASHED_PASSWORD` VARCHAR(60) NOT NULL,
+  `EMAIL` VARCHAR(45) NOT NULL,
+  `BIRTH_DATE` DATE NOT NULL,
+  PRIMARY KEY (`USER_ID`),
+  UNIQUE INDEX `USER_ID_UNIQUE` (`USER_ID` ASC),
+  UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `social_media_db`.`POST`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `social_media_db`.`POST` (
+  `POST_ID` INT NOT NULL AUTO_INCREMENT,
+  `CONTENT` VARCHAR(45) NOT NULL,
+  `USER_ID` INT NOT NULL,
+  `CREATED_AT` TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  `UPDATED_AT` TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`POST_ID`),
+  UNIQUE INDEX `POST_ID_UNIQUE` (`POST_ID` ASC),
+  INDEX `USER_ID_idx` (`USER_ID` ASC),
+  CONSTRAINT `USER_ID`
+    FOREIGN KEY (`USER_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `social_media_db`.`COMMENT`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `social_media_db`.`COMMENT` (
+  `COMMENT_ID` INT NOT NULL AUTO_INCREMENT,
+  `POST_ID` INT NOT NULL,
+  `CONTENT` TEXT NOT NULL,
+  `USER_ID` INT NOT NULL,
+  `CREATED_AT` TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  `UPDATED_AT` TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  PRIMARY KEY (`COMMENT_ID`),
+  UNIQUE INDEX `COMMENT_ID_UNIQUE` (`COMMENT_ID` ASC),
+  INDEX `USER_ID_idx` (`USER_ID` ASC),
+  INDEX `POST_ID_idx` (`POST_ID` ASC),
+  CONSTRAINT `USER_COMMENT_FK`
+    FOREIGN KEY (`USER_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `POST_COMMENT_FK`
+    FOREIGN KEY (`POST_ID`)
+    REFERENCES `social_media_db`.`POST` (`POST_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `social_media_db`.`POST_LIKE`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `social_media_db`.`POST_LIKE` (
+  `POST_ID` INT NOT NULL,
+  `USER_ID` INT NOT NULL,
+  PRIMARY KEY (`POST_ID`, `USER_ID`),
+  INDEX `POST_IDX` (`POST_ID` ASC),
+  INDEX `USER_IDX` (`USER_ID` ASC),
+  CONSTRAINT `POST_LIKE_FK`
+    FOREIGN KEY (`POST_ID`)
+    REFERENCES `social_media_db`.`POST` (`POST_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `USER_LIKE_FK`
+    FOREIGN KEY (`USER_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+SELECT `TABLE_SCHEMA`, `TABLE_NAME`
+FROM `information_schema`.`KEY_COLUMN_USAGE`
+WHERE `CONSTRAINT_NAME` IN ('USER_ID_FK', 'FRIEND_ID_FK');
+
+-- -----------------------------------------------------
+-- Table `social_media_db`.`FRIEND`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `social_media_db`.`FRIEND` (
+  `USER_ID` INT NOT NULL,
+  `FRIEND_ID` INT NOT NULL,
+  PRIMARY KEY (`USER_ID`, `FRIEND_ID`),
+  INDEX `FRIEND_ID_idx` (`FRIEND_ID` ASC),
+  CONSTRAINT `USER_ID_FK`
+    FOREIGN KEY (`USER_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FRIEND_ID_FK`
+    FOREIGN KEY (`FRIEND_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `social_media_db`.`FRIEND_REQUEST`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `social_media_db`.`FRIEND_REQUEST` (
+  `USER_ID` INT NOT NULL,
+  `FRIEND_ID` INT NOT NULL,
+  PRIMARY KEY (`USER_ID`, `FRIEND_ID`),
+  INDEX `FRIEND_ID_idx` (`FRIEND_ID` ASC),
+  CONSTRAINT `USER_REQUEST_ID`
+    FOREIGN KEY (`USER_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FRIEND_REQUEST_ID`
+    FOREIGN KEY (`FRIEND_ID`)
+    REFERENCES `social_media_db`.`USER` (`USER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
