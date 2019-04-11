@@ -19,7 +19,8 @@
     "babel-polyfill": "*",
     "express": "*",
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "mysql": "*"
   },
   "devDependencies": {
     "react-hot-loader": "*",
