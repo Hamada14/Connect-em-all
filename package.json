@@ -24,7 +24,9 @@
     "react-router-dom": "*",
     "react-bootstrap": "1.0.0-beta.6",
     "bootstrap": "*",
-    "prop-types": "*"
+    "prop-types": "*",
+    "express-session": "*",
+    "cookie-parser": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

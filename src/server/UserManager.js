@@ -19,6 +19,16 @@ class UserManager {
         }
         return true;
     }
+
+    getUser(email) {
+        let connection = db.connectToDatabase();
+        let user = new User(null);
+        try {
+            return user.getDetails(connection, 'social_media_db', email);
+        } catch(error) {
+            return null;
+        }
+    }
 }
 
 module.exports = UserManager;
