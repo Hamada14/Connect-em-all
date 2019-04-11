@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './app.css';
 import { HashRouter, Route, Link } from "react-router-dom";
 
+import RegisterPage from "./pages/RegisterPage";
+
 export default class App extends Component {
   state = {};
 
@@ -18,9 +20,7 @@ export default class App extends Component {
   }
 
   registerPage() {
-    return (
-      <p>Register Page</p>
-    )
+    return <RegisterPage />
   }
 
   homePage() {

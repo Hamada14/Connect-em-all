@@ -20,7 +20,9 @@
     "express": "*",
     "react-dom": "*",
     "react": "*",
-    "react-router-dom": "*"
+    "react-router-dom": "*",
+    "react-bootstrap": "1.0.0-beta.6",
+    "bootstrap": "*"
   },
   "devDependencies": {
     "@babel/core": "*",
