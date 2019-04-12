@@ -106,7 +106,7 @@ export default class App extends Component {
         <Route exact path="/settings" component={this.settingsPage} />
       </HashRouter>
     )
-    let navigationBar = this.state.loggedIn ? <UserNavigationBar /> : <GenericNavigationBar />;
+    let navigationBar = this.state.loggedIn ? <UserNavigationBar loginManager={this} fullName={this.state.fullName} /> : <GenericNavigationBar />;
     if(this.state.loggedIn == undefined) {
       navigationBar = "";
       router = "";

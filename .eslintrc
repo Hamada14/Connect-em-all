@@ -9,6 +9,7 @@
     "no-multi-spaces": "error",
     "react/jsx-one-expression-per-line": "off",
     "react/destructuring-assignment": "off",
+    "eslint(react/prop-types": "off",
     "react/jsx-filename-extension": [
       1,
       {

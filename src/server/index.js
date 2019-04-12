@@ -102,6 +102,11 @@ app.get('/api/is_logged_in', (req, res) => {
   res.send(loggedInVeridict);
 })
 
+app.get('/api/sign_out', (req, res) => {
+  req.session.user = undefined;
+  res.status(OK_STATUS_CODE);
+  res.end();
+})
   
 // connection = db.connectToDatabase();
 
