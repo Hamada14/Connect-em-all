@@ -7,6 +7,8 @@
     "max-len": ["error", { "code": 120 }],
     "indent": ["error", 2],
     "no-multi-spaces": "error",
+    "react/jsx-one-expression-per-line": "off",
+    "react/destructuring-assignment": "off",
     "react/jsx-filename-extension": [
       1,
       {

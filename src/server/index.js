@@ -3,7 +3,7 @@ const os = require('os');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 
-const UserManager = require('./UserManager');
+const UserManager = require('./UserManager').UserManager;
 
 const app = express();
 const User = require("./User")
@@ -69,20 +69,15 @@ app.post('/api/login', (req, res) => {
             errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
             return res.send(errors)
           }
-          const newUser = {
-            userName: result[0].FULL_NAME,
+          req.session.user = {
+            fullName: result[0].FULL_NAME,
             email: result[0].EMAIL,
-            hashedPassword: result[0].HASHED_PASSWORD,
-            passwordSalt: result[0].SALT,
-            birthdate: result[0].BIRTH_DATE
           };
-          const user = new User(newUser);
-          req.session.user = user;
         } else {
           errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
         }
         res.status(OK_STATUS_CODE);
-        res.send({ errors: errors});
+        res.send({ errors: errors });
         res.end()
       }) 
   } else {
@@ -90,16 +85,16 @@ app.post('/api/login', (req, res) => {
   }
 });
 
-app.get('/api/is_loggedin', (req, res) => {
+app.get('/api/is_logged_in', (req, res) => {
   let loggedInVeridict = {
     loggedIn: false,
-    userName: null,
+    fullName: null,
     email: null
   }
   if(req.session.user && req.cookies.user_sid) {
     loggedInVeridict = {
       loggedIn: true,
-      userName: req.session.user.userName,
+      fullName: req.session.user.fullName,
       email: req.session.user.email
     }
   } 

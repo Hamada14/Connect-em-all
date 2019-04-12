@@ -3,7 +3,7 @@ const db = require("./database_handler");
 class User {
   constructor(jsonUser) {
     if(jsonUser) {
-      this.userName = jsonUser.userName;
+      this.fullName = jsonUser.fullName;
       this.email = jsonUser.email;
       this.hashedPassword = jsonUser.hashedPassword;
       this.passwordSalt = jsonUser.passwordSalt;
