@@ -7,7 +7,7 @@
     "build": "npm run test && npm run lint && webpack --mode production",
     "client": "webpack-dev-server --mode development --hot --devtool inline-source-map",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "lint:fix": "eslint --fix src",
+    "lint:fix": "eslint --fix src/server/UserManager.js",
     "lint": "eslint src",
     "server": "nodemon src/server/index.js",
     "start": "npm run build && node src/server/index.js",

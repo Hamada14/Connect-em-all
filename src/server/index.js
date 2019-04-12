@@ -70,7 +70,9 @@ app.post('/api/login', (req, res) => {
             return res.send(errors)
           }
           req.session.user = {
-            fullName: result[0].FULL_NAME,
+			hashedPassword: result[0].HASHED_PASSWORD,
+			passwordSalt: result[0].SALT,
+			fullName: result[0].FULL_NAME,
             email: result[0].EMAIL,
           };
         } else {
@@ -107,6 +109,40 @@ app.get('/api/sign_out', (req, res) => {
   res.status(OK_STATUS_CODE);
   res.end();
 })
+
+app.get('/api/update_info', async (req, res) => {
+  /*newUserInfo = {
+	oldPassword: req.body.oldPassword,
+  	password: req.body.password,
+	confirmPassword: req.body.confirmPassword, 
+	fullName: req.body.fullName,
+	birthdate: req.body.birthdate
+  };
+*/
+  console.log(req.session.user.email);
+  newUserInfo = {
+	oldPassword: '12345678',
+  	password: 'abcdefgh',
+	confirmPassword: 'abcdefgh', 
+	fullName: 'abc',
+	birthdate: ''
+  };
+  
+
+
+  const userManager = new UserManager();
+  const errors = userManager.updateUserInfo(req.session, newUserInfo);
+  if(errors.length == 0) {
+    res.status(OK_STATUS_CODE);
+  } else {
+    res.status(ERROR_STATUS_CODE);
+  }
+  res.send({ errors: errors })
+  res.end()
+});
+
+
+>>>>>>> Stashed changes
   
 // connection = db.connectToDatabase();
 

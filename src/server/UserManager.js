@@ -34,6 +34,32 @@ class UserManager {
     return errors;
   }
 
+  async updateUserInfo(session, newUserInfo) {
+    let connection = db.connectToDatabase();
+    let databaseName = "social_media_db";
+    let errors = await validateNewInfo(session, newUserInfo)
+    try {
+      if(errors.length == 0) {
+         let dbRow = {
+          hashedPassword: bcrypt.hashSync(newUserInfo.password, session.user.passwordSalt),
+          birthdate: newUserInfo.birthdate,
+          fullName: newUserInfo.fullName
+        }
+		db.updateUserInfo(connection, session.user.email, dbRow, databaseName)
+      }else{
+		console.log(errors)
+		return errors;
+	  }
+    } catch(error) {
+      console.log(error)
+      return ["Congratulations for discovering a bug! please report"];
+    }
+	return errors;
+  }
+
+
+
+
   getUser(email) {
     let connection = db.connectToDatabase();
     let user = new User(null);
@@ -44,8 +70,6 @@ class UserManager {
     }
   }
 }
-
-
 const DUPLICATE_EMAIL_ERROR = "Please use an unregistered email";
 const INVALID_EMAIL_ERROR = "Please use a valid email";
 const SHORT_PASSWORD_ERROR = "Please use password longer than 7 characters";
@@ -53,6 +77,7 @@ const NON_MATCHING_PASSWORD_ERROR = "Please make sure password is confirmed corr
 const EMPTY_NAME_ERROR = "Please specify a name";
 const INVALID_BIRTHDATE_ERROR = "Please specify a valid birthday";
 const BIRTHDATE_IN_FUTURE_ERROR = "Come back when you're born";
+const WRONG_PASSWORD = "Wrong Password"
 
 const saltRounds = 10;
 
@@ -65,6 +90,21 @@ async function validateInformation(connection, databaseName, userInfo) {
   errors = errors.concat(validateName(userInfo.fullName));
   errors = errors.concat(validateBirthdate(userInfo.birthdate));
   return errors.filter((e1) => e1 != null);
+}
+
+async function validateNewInfo(session, newUserInfo){
+	errors = [];
+	let hashedPassword =
+			bcrypt.hashSync(newUserInfo.oldPassword, session.user.passwordSalt);
+	if(hashedPassword != session.user.hashedPassword){
+		errors.concat(WRONG_PASSWORD);
+	}
+	errors =
+		errors.concat(validatePassword(
+								newUserInfo.password, newUserInfo.confirmPassword));
+	errors = errors.concat(validateName(newUserInfo.fullName));
+	errors = errors.concat(validateBirthdate(newUserInfo.birthdate));
+	return errors.filter((e1) => e1 != null);
 }
 
 async function validateEmail(connection, databaseName, email) {

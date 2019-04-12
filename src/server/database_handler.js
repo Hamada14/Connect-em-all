@@ -83,6 +83,22 @@ function hasUserByEmail(connection, email, databaseName) {
   });
 } 
 
+function updateUserInfo(connection, email, userInfo, databaseName){
+  useDatabase(connection, databaseName);
+  let sqlAdd = "UPDATE USER SET ";
+  sqlAdd += "FULL_NAME=\'" + userInfo.fullName + "\',";
+  sqlAdd += "HASHED_PASSWORD=\'" + userInfo.hashedPassword + "\',";
+  sqlAdd += "BIRTH_DATE=\'" + userInfo.birthdate + "\'";
+  sqlAdd += "WHERE EMAIL=\'" + email + ";";
+  console.log(sqlAdd);
+  connection.query(sqlAdd, function (err, result) {
+    if (err) {
+      throw err;
+    }
+    console.log("User info updated successfully");
+  });
+}
+
 exports.connectToDatabase = connectToDatabase; 
 exports.creatUser = creatUser;
 exports.getUserDetailsByEmail = getUserDetailsByEmail;
