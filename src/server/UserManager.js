@@ -1,5 +1,6 @@
 const moment = require('moment');
 const bcrypt = require('bcryptjs');
+const User = require('./User');
 
 const db = require("./database_handler");
 
@@ -107,4 +108,13 @@ function validateBirthdate(birthdate) {
   return errors;
 }
 
-module.exports = UserManager;
+module.exports = { 
+  UserManager,
+  validateEmail,
+  validatePassword,
+  validateName,
+  validateBirthdate,
+  NON_MATCHING_PASSWORD_ERROR,
+  SHORT_PASSWORD_ERROR,
+  EMPTY_NAME_ERROR
+}
