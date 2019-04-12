@@ -29,7 +29,9 @@
     "cookie-parser": "*",
     "moment": "*",
     "bcryptjs": "*",
-    "body-parser": "*"
+    "body-parser": "*",
+    "bcrypt": "*",
+    "whatwg-fetch": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

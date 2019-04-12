@@ -58,13 +58,19 @@ export default class RegisterPage extends Component {
   }
 
   registerAccount() {
-    let requestParams = this.state;
+    let requestParams = {
+      email: this.state.email,
+      password: this.state.password,
+      confirmPassword: this.state.confirmPassword,
+      fullName: this.state.fullName,
+      birthdate: this.state.birthdate
+    };
     let errors = [];
     let done = true;
     this.setState({ errors: [], loading: true });
-    fetch('/api/register', 
-      { 
-        method: 'POST', 
+    fetch('/api/register',
+      {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestParams) })
       .then(res => res.json())
@@ -93,13 +99,13 @@ export default class RegisterPage extends Component {
   renderErrors(errors) {
     const error_list = (
       <React.Fragment>
-        { errors.map((v) => (<ListGroup.Item key={v} variant="danger"> {v} </ListGroup.Item>)) }
+        { errors.map((v) => (<ListGroup.Item key={v} variant="danger">{v}</ListGroup.Item>)) }
       </React.Fragment>
     )
     return (
       <ListGroup>
         { error_list }
-      </ListGroup>    
+      </ListGroup>
     )
   }
 
@@ -125,7 +131,7 @@ export default class RegisterPage extends Component {
         <Modal.Body>
           You have registered successfully, welcome to the family.
           <br />
-          Please <Link to="/login">login</Link>  to your account  
+          Please login to your account
         </Modal.Body>
       </Modal>
     )
@@ -140,18 +146,18 @@ export default class RegisterPage extends Component {
                   <Form onSubmit={this.registerAccount}>
                     <Form.Group>
                       <Form.Label>Email address</Form.Label>
-                      <Form.Control 
-                        type="email" 
-                        placeholder="Email" 
-                        value={email} 
-                        onChange={this.handleEmailChange} 
+                      <Form.Control
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={this.handleEmailChange}
                       />
                     </Form.Group>
-                  
+
                     <Form.Group>
                       <Form.Label>Password</Form.Label>
-                      <Form.Control 
-                        type="password" 
+                      <Form.Control
+                        type="password"
                         placeholder="Password"
                         value={password}
                         onChange={this.handlePasswordChange}
@@ -160,26 +166,26 @@ export default class RegisterPage extends Component {
 
                     <Form.Group>
                       <Form.Label>Confirm Password</Form.Label>
-                      <Form.Control 
-                        type="password" 
+                      <Form.Control
+                        type="password"
                         placeholder="Confirm Password"
                         value={confirmPassword}
                         onChange={this.handleConfirmPasswordChange}
                       />
                     </Form.Group>
-                                      
+
                     <Form.Group>
                       <Form.Label>Full Name</Form.Label>
-                      <Form.Control 
+                      <Form.Control
                         placeholder="Full Name"
                         value={fullName}
                         onChange={this.handleFullNameChange}
                       />
                     </Form.Group>
-                                      
+
                     <Form.Group>
                       <Form.Label>Birthday</Form.Label>
-                      <Form.Control 
+                      <Form.Control
                         type="date"
                         value={birthdate}
                         onChange={this.handleBirthdateChange}
