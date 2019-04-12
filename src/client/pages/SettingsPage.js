@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Form, Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
+import { errorsBlock, loadingBlock } from "../Util";
 
 export default class SettingsPage extends Component {
     state = {
@@ -138,7 +140,7 @@ export default class SettingsPage extends Component {
                       <Form.Label>Old Password</Form.Label>
                       <Form.Control
                         type="password"
-                        placeholder="OldPassword"
+                        placeholder="Old Password"
                         value={oldPassword}
                         onChange={this.handleOldPasswordChange}
                       />
@@ -197,3 +199,4 @@ export default class SettingsPage extends Component {
       </React.Fragment>
     )
     }
+};
