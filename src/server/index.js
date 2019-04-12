@@ -79,19 +79,21 @@ app.post('/api/login', (req, res) => {
       }
       res.status(OK_STATUS_CODE);
       res.send({ errors: errors});
-      res.end
+      res.end()
     }) 
 });
 
 app.get('/api/is_loggedin', (req, res) => {
   let loggedInVeridict = {
     loggedIn: false,
-    userName: null
+    userName: null,
+    email: null
   }
   if(req.session.user && req.cookies.user_sid) {
     loggedInVeridict = {
       loggedIn: true,
-      userName: req.session.user.email
+      userName: req.session.user.userName,
+      email: req.session.user.email
     }
   } 
   res.status(OK_STATUS_CODE);
