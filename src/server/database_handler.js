@@ -4,8 +4,8 @@ function connectToDatabase() {
     
   var connection = mysql.createConnection({
     host: 'localhost',
-    user: 'moamen',
-    password: 'mysqlserver',
+    user: 'root',
+    password: 'admin',
     database: 'social_media_db'
   });
 

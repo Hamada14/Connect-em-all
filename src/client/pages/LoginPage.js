@@ -57,6 +57,7 @@ export default class LoginPage extends Component {
           done = false
         }
         this.setState({ loading: false, errors: errors, done: done });
+        this.props.loginManager.updateLoggedStatus();
       }).catch(_ => this.setState({ loading: false, errors: ["Couldn't connect to the server"] }));
   }
 
