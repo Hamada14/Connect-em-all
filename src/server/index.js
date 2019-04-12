@@ -47,42 +47,39 @@ app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().use
 app.post('/api/register', async (req, res) => {
   const userManager = new UserManager();
   const errors = await userManager.registerUser(req.body);
-  if(errors.length == 0) {
-    res.status(OK_STATUS_CODE);
-  } else {
-    res.status(ERROR_STATUS_CODE);
-  }
+  res.status(OK_STATUS_CODE);
   res.send({ errors: errors })
   res.end()
 });
 
 
 app.post('/api/login', (req, res) => {
-  userManager = new UserManager();
-  jsonUser = req.body;
+  const userManager = new UserManager();
+  const jsonUser = req.body;
   userManager.getUser(jsonUser.email)
     .then(result => {
+      const errors = [];
       if(result && result.length > 0) {
         let password = jsonUser.password;
         let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
         if(result[0].HASHED_PASSWORD !== hashedPassword) {
           return res.send('Wrong email or password')
         }
-        newUser = {
+        const newUser = {
           userName: result[0].FULL_NAME,
           email: result[0].EMAIL,
           hashedPassword: result[0].HASHED_PASSWORD,
           passwordSalt: result[0].SALT,
           birthdate: result[0].BIRTH_DATE
         };
-        user = new User(newUser);
+        const user = new User(newUser);
         req.session.user = user;
-        res.status(OK_STATUS_CODE);
-        return res.send("Successful login");
       } else {
-        res.status(ERROR_STATUS_CODE);
-        return res.send('Wrong email or password');
+        errors.push('Wrong email or password');
       }
+      res.status(OK_STATUS_CODE);
+      res.send({ errors: errors});
+      res.end
     }) 
 });
 

@@ -2,7 +2,7 @@ const moment = require('moment');
 const bcrypt = require('bcryptjs');
 
 const db = require("./database_handler");
-
+const User = require("./User")
 class UserManager {
   
   constructor() {
