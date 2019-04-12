@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import React from 'react';
-import { ListGroup, Spinner } from 'react-bootstrap';
+import { ListGroup, Spinner, Alert } from 'react-bootstrap';
 
 export function errorsBlock(errors) {
   if(errors.length == 0) {
@@ -16,6 +16,10 @@ export function errorsBlock(errors) {
       { error_list }
     </ListGroup>
   )
+}
+
+export function successfulBlock(message) {
+  return <Alert variant='success'>{message}</Alert>;
 }
 
 export function loadingBlock(loading) {

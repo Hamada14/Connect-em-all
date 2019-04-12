@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
 
 export default class UserNavigationBar extends Component {
-  state = {
-  };
 
   constructor(props) {
     super(props);
+    this.state = {
+    }
 
     this.signOut = this.signOut.bind(this)
   }
@@ -43,12 +43,9 @@ export default class UserNavigationBar extends Component {
             </Navbar.Collapse>
             { searchBlock }
             &nbsp;&nbsp;
-            <Button
-              variant="outline-success"
-              onClick={this.signOut}
-            >
-              Sign out
-            </Button>
+            <Button variant="outline-warning" href="#/settings">Settings</Button>
+            &nbsp;&nbsp;
+            <Button variant="outline-danger" onClick={this.signOut}>Sign out</Button>
           </Nav>
         </Navbar>
       </React.Fragment>

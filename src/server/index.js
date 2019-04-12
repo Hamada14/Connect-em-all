@@ -3,12 +3,11 @@ const os = require('os');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 
-const UserManager = require('./UserManager').UserManager;
-
 const app = express();
-const User = require("./User")
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+
+const UserManager = require('./UserManager').UserManager;
 
 const OK_STATUS_CODE = 200;
 const ERROR_STATUS_CODE = 400;
@@ -16,7 +15,7 @@ const ERROR_STATUS_CODE = 400;
 const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
 const EMPTY_FIELDS_ERROR = "fill in all the fields";
 
-// initialize cookie-parser to allow us access the cookies stored in the browser. 
+// initialize cookie-parser to allow us access the cookies stored in the browser.
 app.use(cookieParser());
 
 // initialize express-session to allow us track the logged-in user across sessions.
@@ -36,7 +35,7 @@ var sessionChecker = (req, res, next) => {
     res.redirect('/dashboard');
   } else {
     next();
-  }    
+  }
 };
 
 
@@ -70,10 +69,11 @@ app.post('/api/login', (req, res) => {
             return res.send(errors)
           }
           req.session.user = {
-			hashedPassword: result[0].HASHED_PASSWORD,
-			passwordSalt: result[0].SALT,
-			fullName: result[0].FULL_NAME,
+			      hashedPassword: result[0].HASHED_PASSWORD,
+			      passwordSalt: result[0].SALT,
+			      fullName: result[0].FULL_NAME,
             email: result[0].EMAIL,
+            birthdate: result[0].BIRTH_DATE
           };
         } else {
           errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
@@ -81,7 +81,7 @@ app.post('/api/login', (req, res) => {
         res.status(OK_STATUS_CODE);
         res.send({ errors: errors });
         res.end()
-      }) 
+      })
   } else {
     errors.push(EMPTY_FIELDS_ERROR);
   }
@@ -96,10 +96,12 @@ app.get('/api/is_logged_in', (req, res) => {
   if(req.session.user && req.cookies.user_sid) {
     loggedInVeridict = {
       loggedIn: true,
+      hashedPassword: req.session.user.hashedPassword,
       fullName: req.session.user.fullName,
-      email: req.session.user.email
+      email: req.session.user.email,
+      birthdate: req.session.user.birthdate
     }
-  } 
+  }
   res.status(OK_STATUS_CODE);
   res.send(loggedInVeridict);
 })
@@ -114,7 +116,7 @@ app.get('/api/update_info', async (req, res) => {
   /*newUserInfo = {
 	oldPassword: req.body.oldPassword,
   	password: req.body.password,
-	confirmPassword: req.body.confirmPassword, 
+	confirmPassword: req.body.confirmPassword,
 	fullName: req.body.fullName,
 	birthdate: req.body.birthdate
   };
@@ -123,11 +125,11 @@ app.get('/api/update_info', async (req, res) => {
   newUserInfo = {
 	oldPassword: '12345678',
   	password: 'abcdefgh',
-	confirmPassword: 'abcdefgh', 
+	confirmPassword: 'abcdefgh',
 	fullName: 'abc',
 	birthdate: ''
   };
-  
+
 
 
   const userManager = new UserManager();
@@ -140,11 +142,6 @@ app.get('/api/update_info', async (req, res) => {
   res.send({ errors: errors })
   res.end()
 });
-
-
->>>>>>> Stashed changes
-  
-// connection = db.connectToDatabase();
 
 
 // eslint-disable-next-line no-console

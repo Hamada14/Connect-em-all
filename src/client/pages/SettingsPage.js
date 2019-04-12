@@ -1,130 +1,85 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Form, Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
+import { errorsBlock, loadingBlock, successfulBlock } from "../Util";
 
 export default class SettingsPage extends Component {
-    state = {
-        oldPassword : '',
-        newPassword: '',
-        confirmPassword: '',
-        fullName: '',
-        birthdate: '',
-        errors: [],
-        loading: false,
-        done: false
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      fullName : props.fullName,
+      birthdate : props.birthdate,
+      oldPassword : '',
+      newPassword : '',
+      confirmPassword : '',
+      errors : [],
+      loading : false,
+      done : false
     };
+    console.log(props.birthdate)
+    this.handleOldPasswordChange = this.handleOldPasswordChange.bind(this);
+    this.handleNewPasswordChange = this.handleNewPasswordChange.bind(this);
+    this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
+    this.handleFullNameChange = this.handleFullNameChange.bind(this);
+    this.handleBirthdateChange = this.handleBirthdateChange.bind(this);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            oldPassword : '',
-            newPassword : '',
-            confirmPassword : '',
-            fullName : props.fullName,
-            birthdate : props.birthdate,
-            errors : [],
-            loading : false,
-            done : false
-        };
-        this.handleOldPasswordChange = this.handleOldPasswordChange.bind(this);
-        this.handleNewPasswordChange = this.handleNewPasswordChange.bind(this);
-        this.handleConfirmPasswordChange =
-            this.handleConfirmPasswordChange.bind(this);
-        this.handleFullNameChange = this.handleFullNameChange.bind(this);
-        this.handleBirthdateChange = this.handleBirthdateChange.bind(this);
-        this.successfulModalClose = this.successfulModalClose.bind(this);
+    this.updateSettings = this.updateSettings.bind(this);
+  }
 
-        this.updateSettings = this.updateSettings.bind(this);
-    }
+  handleFullNameChange(event) {
+    this.setState({ fullName : event.target.value });
+  }
 
-    handleOldPasswordChange(event) {
-        this.setState({oldPassword : event.target.value});
-    }
+  handleBirthdateChange(event) {
+    this.setState({ birthdate : event.target.value });
+  }
 
-    handleNewPasswordChange(event) {
-        this.setState({newPassword : event.target.value});
-    }
+  handleOldPasswordChange(event) {
+    this.setState({ oldPassword : event.target.value });
+  }
 
-    handleConfirmPasswordChange(event) {
-        this.setState({confirmPassword : event.target.value});
-    }
+  handleNewPasswordChange(event) {
+    this.setState({ newPassword : event.target.value });
+  }
 
-    handleFullNameChange(event) {
-        this.setState({fullName : event.target.value});
-    }
+  handleConfirmPasswordChange(event) {
+    this.setState({ confirmPassword : event.target.value });
+  }
 
-    handleBirthdateChange(event) {
-        this.setState({birthdate : event.target.value});
-    }
+  updateSettings() {
+    let requestParams = {
+      fullName : this.state.fullName,
+      birthdate : this.state.birthdate,
+      oldPassword : this.state.oldPassword,
+      newPassword : this.state.newPassword,
+      confirmPassword : this.state.confirmPassword,
+    };
+    let errors = [];
+    let done = true;
+    this.setState({ errors : [], loading : true });
+    fetch('/api/update_info', {
+      method : 'POST',
+      headers : { 'Content-Type' : 'application/json' },
+      body : JSON.stringify(requestParams)
+    }).then(res => res.json())
+      .then(result => {
+        errors = result.errors;
+        if (errors.length != 0) {
+          done = false
+        }
+        this.setState({ loading : false, errors : errors, done : done });
+      })
+      .catch(_ => this.setState({ loading : false, done: false, errors : [ "Couldn't connect to the server" ] }));
+  }
 
-    updateSettings() {
-        let requestParams = {
-            oldPassword : this.state.oldPassword,
-            newPassword : this.state.newPassword,
-            confirmPassword : this.state.confirmPassword,
-            fullName : this.state.fullName,
-            birthdate : this.state.birthdate
-        };
-        let errors = [];
-        let done = true;
-        this.setState({errors : [], loading : true});
-        fetch('/api/update_info', {
-            method : 'POST',
-            headers : {'Content-Type' : 'application/json'},
-            body : JSON.stringify(requestParams)
-        })
-            .then(res => res.json())
-            .then(result => {
-                errors = result.errors;
-                if (errors.length != 0) {
-                    done = false
-                }
-                this.setState({loading : false, errors : errors, done : done});
-            })
-            .catch(_ => this.setState({
-                loading : false,
-                errors : [ "Couldn't connect to the server" ]
-            }));
-    }
-
-    successfulModalClose() {
-        this.setState({
-            oldPassword : '',
-            newPassword : '',
-            confirmPassword : '',
-            fullName : '',
-            birthdate : '',
-            errors : [],
-            loading : false,
-            done : false
-        });
-    }
-
-    render() {
-        const {
-            oldPassword,
-            newPassword,
-            confirmPassword,
-            fullName,
-            birthdate,
-            errors,
-            loading,
-            done
-        } = this.state;
+  render() {
+    const { fullName, birthdate, oldPassword, newPassword, confirmPassword, errors, loading, done } = this.state;
     const submitBlock = (
       <Button variant="primary" type="submit" disabled={loading} onClick={this.updateSettings}>
-        Submit
+        Change Information
       </Button>
     );
-
-    const successfulModal = (
-      <Modal show={done} onHide={this.successfulModalClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Done</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          You have updated the settings successfully.
-        </Modal.Body>
-      </Modal>
-    )
+    
     return (
       <React.Fragment>
         <Container>
@@ -138,7 +93,7 @@ export default class SettingsPage extends Component {
                       <Form.Label>Old Password</Form.Label>
                       <Form.Control
                         type="password"
-                        placeholder="OldPassword"
+                        placeholder="Old Password"
                         value={oldPassword}
                         onChange={this.handleOldPasswordChange}
                       />
@@ -147,29 +102,28 @@ export default class SettingsPage extends Component {
                     <Form.Group>
                       <Form.Label>New Password</Form.Label>
                       <Form.Control
-    type = "password"
-    placeholder = "New Password"
-    value = {newPassword} onChange =
-    { this.handleNewPasswordChange } />
-                    </Form.Group >
+                        type="password"
+                        placeholder="New Password"
+                        value={newPassword}
+                        onChange={this.handleNewPasswordChange}
+                      />
+                    </Form.Group>
 
-        <Form.Group><Form.Label>Confirm Password<
-            /Form.Label>
+                    <Form.Group><Form.Label>Confirm Password</Form.Label>
                       <Form.Control
                         type="password"
                         placeholder="Confirm Password"
                         value={confirmPassword}
                         onChange={this.handleConfirmPasswordChange}
                       />
-        </Form.Group>
+                    </Form.Group>
 
                     <Form.Group>
-                      <Form.Label>Full Name</Form
-             .Label>< Form.Control
-    placeholder = "Full Name"
+                      <Form.Label>Full Name</Form.Label>
+                      <Form.Control
+                        placeholder="Full Name"
                         value={fullName}
-                        onChange={
-            this.handleFullNameChange}
+                        onChange={this.handleFullNameChange}
                       />
                     </Form.Group>
 
@@ -177,7 +131,7 @@ export default class SettingsPage extends Component {
                       <Form.Label>Birthday</Form.Label>
                       <Form.Control
                         type="date"
-                        value={birthdate}
+                        value={birthdate.substring(0, 10)}
                         onChange={this.handleBirthdateChange}
                       />
                     </Form.Group>
@@ -186,9 +140,9 @@ export default class SettingsPage extends Component {
                   {errorsBlock(errors)}
                   <br />
                   {loadingBlock(loading)}
+                  {done ? successfulBlock('Information has been updated') : ''}
                   <br />
                   {submitBlock}
-                  {successfulModal}
                 </Card.Body>
               </Card>
             </Col>
@@ -196,4 +150,5 @@ export default class SettingsPage extends Component {
         </Container>
       </React.Fragment>
     )
-    }
+  }
+}

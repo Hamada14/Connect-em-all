@@ -16,6 +16,7 @@ export default class App extends Component {
     loggedIn: false,
     email: undefined,
     fullName: undefined,
+    birthdate: undefined,
     loading: false
   };
 
@@ -26,6 +27,7 @@ export default class App extends Component {
       loggedIn: undefined,
       email: undefined,
       fullName: undefined,
+      birthdate: undefined,
       loading: true
     };
   
@@ -39,9 +41,17 @@ export default class App extends Component {
     this.updateLoggedStatus()
   }
 
-
   settingsPage() {
-    return <SettingsPage />
+    if(!this.state.loggedIn) {
+      return this.redirectToLogin();
+    }
+    return (
+      <SettingsPage 
+        email={this.state.email}
+        fullName={this.state.fullName}
+        birthdate={this.state.birthdate}
+      />
+    )
   }
 
   updateLoggedStatus() {
@@ -49,6 +59,7 @@ export default class App extends Component {
     let loggedIn = false;
     let email = undefined;
     let fullName = undefined;
+    let birthdate = undefined;
     fetch('/api/is_logged_in',
       {
         method: 'GET',
@@ -60,8 +71,9 @@ export default class App extends Component {
         if(loggedIn) {
           email = result.email;
           fullName = result.fullName;
+          birthdate = result.birthdate;
         }
-        this.setState({ loading: false, loggedIn: loggedIn, email: email, fullName: fullName });
+        this.setState({ loading: false, loggedIn: loggedIn, email: email, fullName: fullName, birthdate: birthdate });
       }).catch(_ => this.setState({ loading: false }));
   }
   
@@ -98,24 +110,25 @@ export default class App extends Component {
 
   render() {
     const loading = this.state.loading;
+    let navigationBar = this.state.loggedIn ? <UserNavigationBar loginManager={this} fullName={this.state.fullName} /> : <GenericNavigationBar />;
     let router = (
       <HashRouter>
+        {navigationBar}
+        <br />
         <Route exact path="/" component={this.homePage} />
         <Route exact path="/login" component={this.loginPage} />
         <Route exact path="/register" component={this.registerPage} />
         <Route exact path="/settings" component={this.settingsPage} />
       </HashRouter>
     )
-    let navigationBar = this.state.loggedIn ? <UserNavigationBar loginManager={this} fullName={this.state.fullName} /> : <GenericNavigationBar />;
     if(this.state.loggedIn == undefined) {
       navigationBar = "";
       router = "";
     }
     return (
       <React.Fragment>
-        { navigationBar }
-        <br />
         {router}
+        <br />
         {loadingBlock(loading)}
       </React.Fragment>
     );
