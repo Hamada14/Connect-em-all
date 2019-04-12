@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const User = require('./User');
 
 const db = require("./database_handler");
-const User = require("./User")
 class UserManager {
   
   constructor() {
@@ -116,5 +115,9 @@ module.exports = {
   validateBirthdate,
   NON_MATCHING_PASSWORD_ERROR,
   SHORT_PASSWORD_ERROR,
-  EMPTY_NAME_ERROR
+  EMPTY_NAME_ERROR,
+  INVALID_BIRTHDATE_ERROR,
+  BIRTHDATE_IN_FUTURE_ERROR,
+  INVALID_EMAIL_ERROR,
+  DUPLICATE_EMAIL_ERROR
 }

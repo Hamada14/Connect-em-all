@@ -1,4 +1,5 @@
 const userManager = require('server/UserManager'); 
+const db = require('server/database_handler');
 
 describe("Validate password", () => {
     
@@ -43,6 +44,71 @@ describe("Validate fullname", () => {
         let errors = userManager.validateName(fullName);
         expect(errors.length).toEqual(1);
         expect(errors[0]).toEqual(userManager.EMPTY_NAME_ERROR);
+    });
+
+})
+
+describe("Validate birth date", () => {
+
+    it("Validate correct birth date", () => {
+        let birthDate = "1996-01-06";
+        let errors = userManager.validateBirthdate(birthDate);
+        expect(errors.length).toEqual(0);
+    });
+
+    it("Validate wrong birth date format", () => {
+        let birthDate = "01-996";
+        let errors = userManager.validateBirthdate(birthDate);
+        expect(errors.length).toEqual(1);
+        expect(errors[0]).toEqual(userManager.INVALID_BIRTHDATE_ERROR);
+    });
+
+    it("Validate null birth date", () => {
+        let birthDate = null;
+        let errors = userManager.validateBirthdate(birthDate);
+        expect(errors.length).toEqual(1);
+        expect(errors[0]).toEqual(userManager.INVALID_BIRTHDATE_ERROR);
+    });
+
+    it("Validate future birth date", () => {
+        let birthDate = "2019-10-10";
+        let errors = userManager.validateBirthdate(birthDate);
+        expect(errors.length).toEqual(1);
+        expect(errors[0]).toEqual(userManager.BIRTHDATE_IN_FUTURE_ERROR);
+    });
+
+})
+
+describe("Validate email", () => {
+
+    const dbHandler = require('server/database_handler');
+
+    beforeAll(() => {
+        jest.unmock('server/database_handler.js');
+        dbHandler.hasUserByEmail = jest.fn();
+    });
+
+    it('Test correct email format', async() => {
+        dbHandler.hasUserByEmail.mockReturnValue(false);
+        let email = "moamenelbaroudy.me@gmail.com";
+        let errors = await userManager.validateEmail(null, null, email);
+        expect(errors.length).toEqual(0);
+    });
+
+    it('Test incorrect email format', async() => {
+        dbHandler.hasUserByEmail.mockReturnValue(false);
+        let email = "this is wrong email format";
+        let errors = await userManager.validateEmail(null, null, email);
+        expect(errors.length).toEqual(1);
+        expect(errors[0]).toEqual(userManager.INVALID_EMAIL_ERROR);
+    });
+
+    it('test duplicate email format', async() => {
+        dbHandler.hasUserByEmail.mockReturnValue(true);
+        let email = "moamenelbaroudy.me@gmail.com";
+        let errors = await userManager.validateEmail(null, null, email);
+        expect(errors.length).toEqual(1);
+        expect(errors[0]).toEqual(userManager.DUPLICATE_EMAIL_ERROR);
     })
 
 })
