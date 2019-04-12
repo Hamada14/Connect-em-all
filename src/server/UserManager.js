@@ -50,6 +50,7 @@ const SHORT_PASSWORD_ERROR = "Please use password longer than 7 characters";
 const NON_MATCHING_PASSWORD_ERROR = "Please make sure password is confirmed correctly";
 const EMPTY_NAME_ERROR = "Please specify a name";
 const INVALID_BIRTHDATE_ERROR = "Please specify a valid birthday";
+const BIRTHDATE_IN_FUTURE_ERROR = "Come back when you're born";
 
 const saltRounds = 10;
 
@@ -97,9 +98,12 @@ function validateName(fullName) {
 
 function validateBirthdate(birthdate) {
   let errors = []
-  if(birthdate == null || !moment(birthdate, "YYYY-MM-DD").isValid()) {
+  let momentDate = moment(birthdate, "YYYY-MM-DD")
+  if(birthdate == null || !momentDate.isValid()) {
     errors.push(INVALID_BIRTHDATE_ERROR);
   }
+  if(birthdate && errors.length == 0 && moment().diff(momentDate) <= 0)
+    errors.push(BIRTHDATE_IN_FUTURE_ERROR);
   return errors;
 }
 
