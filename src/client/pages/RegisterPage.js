@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react';
-import { Form, Button, Card, Container, Row, Col, Spinner, Modal, ListGroup } from 'react-bootstrap';
-import { Link } from "react-router-dom";
+import { Form, Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
+import { errorsBlock, loadingBlock } from "../Util";
+
 
 export default class RegisterPage extends Component {
   state = {
@@ -96,31 +97,12 @@ export default class RegisterPage extends Component {
     });
   }
 
-  renderErrors(errors) {
-    const error_list = (
-      <React.Fragment>
-        { errors.map((v) => (<ListGroup.Item key={v} variant="danger">{v}</ListGroup.Item>)) }
-      </React.Fragment>
-    )
-    return (
-      <ListGroup>
-        { error_list }
-      </ListGroup>
-    )
-  }
-
   render() {
     const { email, password, confirmPassword, fullName, birthdate, errors, loading, done } = this.state;
-    const hasErrors = errors.length != 0;
     const submitBlock = (
-      <Button variant="primary" type="submit" onClick={this.registerAccount}>
+      <Button variant="primary" type="submit" disabled={loading} onClick={this.registerAccount}>
         Submit
       </Button>
-    );
-    const loadingBlock = (
-      <Spinner animation="border" role="status">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
     );
 
     const successfulModal = (
@@ -193,9 +175,11 @@ export default class RegisterPage extends Component {
                     </Form.Group>
 
                   </Form>
-                  {hasErrors ? this.renderErrors(errors) : ""}
+                  {errorsBlock(errors)}
                   <br />
-                  {loading ? loadingBlock : submitBlock}
+                  {loadingBlock(loading)}
+                  <br />
+                  {submitBlock}
                   {successfulModal}
                 </Card.Body>
               </Card>
