@@ -9,10 +9,12 @@ const app = express();
 const User = require("./User")
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const db = require('./database_handler');
 
 const OK_STATUS_CODE = 200;
 const ERROR_STATUS_CODE = 400;
+
+const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
+const EMPTY_FIELDS_ERROR = "fill in all the fields";
 
 // initialize cookie-parser to allow us access the cookies stored in the browser. 
 app.use(cookieParser());
@@ -56,27 +58,31 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', (req, res) => {
   const userManager = new UserManager();
   const jsonUser = req.body;
-  userManager.getUser(jsonUser.email)
-    .then(result => {
-      const errors = [];
-      if(result && result.length > 0) {
-        let password = jsonUser.password;
-        let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
-        if(result[0].HASHED_PASSWORD !== hashedPassword) {
-          return res.send('Wrong email or password')
+  const errors = [];
+  if(jsonUser.email && jsonUser.email.length != 0 && jsonUser.password && jsonUser.password.length != 0) {
+    userManager.getUser(jsonUser.email)
+      .then(result => {
+        if(result && result.length > 0) {
+          let password = jsonUser.password;
+          let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
+          if(result[0].HASHED_PASSWORD !== hashedPassword) {
+            errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
+            return res.send(errors)
+          }
+          req.session.user = {
+            fullName: result[0].FULL_NAME,
+            email: result[0].EMAIL,
+          };
+        } else {
+          errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
         }
-        const newUser = {
-          fullName: result[0].FULL_NAME,
-          email: result[0].EMAIL,
-        };
-        req.session.user = newUser;
-      } else {
-        errors.push('Wrong email or password');
-      }
-      res.status(OK_STATUS_CODE);
-      res.send({ errors: errors });
-      res.end();
-    }) 
+        res.status(OK_STATUS_CODE);
+        res.send({ errors: errors });
+        res.end()
+      }) 
+  } else {
+    errors.push(EMPTY_FIELDS_ERROR);
+  }
 });
 
 app.get('/api/is_logged_in', (req, res) => {
