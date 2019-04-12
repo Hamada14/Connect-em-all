@@ -4,3 +4,7 @@ global.fetch = fetchPolifill.fetch
 global.Request = fetchPolifill.Request
 global.Headers = fetchPolifill.Headers
 global.Response = fetchPolifill.Response
+
+global.flushPromises = () => {
+  return new Promise(resolve => setImmediate(resolve));
+};

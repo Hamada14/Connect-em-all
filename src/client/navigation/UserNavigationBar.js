@@ -30,11 +30,11 @@ export default class UserNavigationBar extends Component {
     return (
       <React.Fragment>
         <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="#home">Connect ‘em</Navbar.Brand>
+          <Navbar.Brand href="#">Connect ‘em</Navbar.Brand>
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#">Home</Nav.Link>
           </Nav>
-  
+
           <Nav>
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
@@ -43,7 +43,7 @@ export default class UserNavigationBar extends Component {
             </Navbar.Collapse>
             { searchBlock }
             &nbsp;&nbsp;
-            <Button 
+            <Button
               variant="outline-success"
               onClick={this.signOut}
             >

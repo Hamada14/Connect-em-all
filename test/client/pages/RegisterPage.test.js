@@ -76,11 +76,6 @@ describe("Register Page Logic", () => {
     wrapper.find(Button).simulate('click');
   }
 
-
-  const flushPromises = () => {
-    return new Promise(resolve => setImmediate(resolve));
-  };
-
   describe('On Clicking Submit', () => {
 
     let callParams;
