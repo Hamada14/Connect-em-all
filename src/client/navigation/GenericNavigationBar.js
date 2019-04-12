@@ -6,9 +6,7 @@ const GenericNavigationBar = () => {
     <React.Fragment>
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand href="#">Connect ‘em</Navbar.Brand>
-        <Nav className="mr-auto">
-          {/* <Nav.Link href="#">Home</Nav.Link> */}
-        </Nav>
+        <Nav className="mr-auto" />
 
         <Nav>
           <Nav.Link href="#register">Register</Nav.Link>
