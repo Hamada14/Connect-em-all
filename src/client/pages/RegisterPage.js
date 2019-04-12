@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { Component } from 'react';
-import { Form, Button, Card, Container, Row, Col, Spinner, Modal, Alert, ListGroup } from 'react-bootstrap';
+import { Form, Button, Card, Container, Row, Col, Spinner, Modal, ListGroup } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 
 export default class RegisterPage extends Component {
@@ -9,7 +9,7 @@ export default class RegisterPage extends Component {
     password: '',
     confirmPassword: '',
     fullName: '',
-    birthday: '',
+    birthdate: '',
     errors: [],
     loading: false,
     done: false
@@ -22,7 +22,7 @@ export default class RegisterPage extends Component {
       password: '',
       confirmPassword: '',
       fullName: '',
-      birthday: '',
+      birthdate: '',
       errors: [],
       loading: false,
       done: false
@@ -31,7 +31,7 @@ export default class RegisterPage extends Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
     this.handleFullNameChange = this.handleFullNameChange.bind(this);
-    this.handleBirthdayChange = this.handleBirthdayChange.bind(this);
+    this.handleBirthdateChange = this.handleBirthdateChange.bind(this);
     this.successfulModalClose = this.successfulModalClose.bind(this);
 
     this.registerAccount = this.registerAccount.bind(this);
@@ -53,8 +53,8 @@ export default class RegisterPage extends Component {
     this.setState({ fullName: event.target.value });
   }
 
-  handleBirthdayChange(event) {
-    this.setState({ birthday: event.target.value });
+  handleBirthdateChange(event) {
+    this.setState({ birthdate: event.target.value });
   }
 
   registerAccount() {
@@ -62,7 +62,11 @@ export default class RegisterPage extends Component {
     let errors = [];
     let done = true;
     this.setState({ errors: [], loading: true });
-    fetch('/api/register', { method: 'POST', body: JSON.stringify(requestParams) })
+    fetch('/api/register', 
+      { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestParams) })
       .then(res => res.json())
       .then(result => {
         errors = result.errors;
@@ -79,7 +83,7 @@ export default class RegisterPage extends Component {
       password: '',
       confirmPassword: '',
       fullName: '',
-      birthday: '',
+      birthdate: '',
       errors: [],
       loading: false,
       done: false
@@ -100,7 +104,7 @@ export default class RegisterPage extends Component {
   }
 
   render() {
-    const { email, password, confirmPassword, fullName, birthday, errors, loading, done } = this.state;
+    const { email, password, confirmPassword, fullName, birthdate, errors, loading, done } = this.state;
     const hasErrors = errors.length != 0;
     const submitBlock = (
       <Button variant="primary" type="submit" onClick={this.registerAccount}>
@@ -177,8 +181,8 @@ export default class RegisterPage extends Component {
                       <Form.Label>Birthday</Form.Label>
                       <Form.Control 
                         type="date"
-                        value={birthday}
-                        onChange={this.handleBirthdayChange}
+                        value={birthdate}
+                        onChange={this.handleBirthdateChange}
                       />
                     </Form.Group>
 

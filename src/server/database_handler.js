@@ -30,14 +30,14 @@ function useDatabase(connection, databaseName) {
   });
 }
 
-function creatUser(connection, user, databaseName) {
+function creatUser(connection, userParams, databaseName) {
   useDatabase(connection, databaseName);
-  sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWoRD, EMAIL, BIRTH_DATE) values (";
-  sqlAdd += "\'" + user.userName + "\',";
-  sqlAdd += "\'" + user.passwordSalt + "\',";
-  sqlAdd += "\'" + user.hashedPassword + "\',";
-  sqlAdd += "\'" + user.email + "\',";
-  sqlAdd += "\'" + user.birthdate + "\');";
+  let sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWORD, EMAIL, BIRTH_DATE) values (";
+  sqlAdd += "\'" + userParams.fullName + "\',";
+  sqlAdd += "\'" + userParams.salt + "\',";
+  sqlAdd += "\'" + userParams.hashedPassword + "\',";
+  sqlAdd += "\'" + userParams.email + "\',";
+  sqlAdd += "\'" + userParams.birthdate + "\');";
   // sqlAdd = "select * from USER";
   console.log(sqlAdd);
   connection.query(sqlAdd, function (err, result) {
@@ -50,37 +50,37 @@ function creatUser(connection, user, databaseName) {
 }
 
 function getUserDetailsByEmail(connection, email, databaseName) {
-    useDatabase(connection, databaseName);
-    sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
-    console.log(sqlSelect);
-    return new Promise((resolve, reject) => {
-        connection.query(sqlSelect, function (err, result) {
-            if(err) {
-                console.log("error");
-                throw err;
-            }
-            resolve(result);
-        });
+  useDatabase(connection, databaseName);
+  sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
+  console.log(sqlSelect);
+  return new Promise((resolve, reject) => {
+    connection.query(sqlSelect, function (err, result) {
+      if(err) {
+        console.log("error");
+        throw err;
+      }
+      resolve(result);
     });
+  });
 }
 
 function hasUserByEmail(connection, email, databaseName) {
-    useDatabase(connection, databaseName);
-    sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
-    console.log(sqlSelect);
-    return new Promise((resolve, reject) => {
-        connection.query(sqlSelect, function (err, result) {
-            if(err) {
-                console.log("error");
-                throw err;
-            }
-            let veridict = false;
-            if(result && result.length > 0) {
-                veridict = true;
-            }
-            resolve(veridict);
-        });
+  useDatabase(connection, databaseName);
+  let sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
+  console.log(sqlSelect);
+  return new Promise((resolve, reject) => {
+    connection.query(sqlSelect, function (err, result) {
+      if(err) {
+        console.log("error");
+        reject(err);
+      }
+      let veridict = false;
+      if(result && result.length > 0) {
+        veridict = true;
+      }
+      resolve(veridict);
     });
+  });
 } 
 
 exports.connectToDatabase = connectToDatabase; 

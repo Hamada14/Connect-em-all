@@ -1,5 +1,7 @@
 const express = require('express');
 const os = require('os');
+const bodyParser = require('body-parser');
+
 const UserManager = require('./UserManager');
 
 const app = express();
@@ -36,13 +38,15 @@ var sessionChecker = (req, res, next) => {
 
 
 app.use(express.static('dist'));
+
+app.use(bodyParser.json());
+
 app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
-app.post('/api/register', (req, res) => {
+app.post('/api/register', async (req, res) => {
   const userManager = new UserManager();
-  const successfullRegisteration = true // userManager.registerUser(req.user);
-  const errors = []
-  if(successfullRegisteration) {
+  const errors = await userManager.registerUser(req.body);
+  if(errors.length == 0) {
     res.status(OK_STATUS_CODE);
   } else {
     res.status(ERROR_STATUS_CODE);
@@ -78,6 +82,7 @@ app.post('/api/login', (req, res) => {
 
   
 // connection = db.connectToDatabase();
+
 
 // eslint-disable-next-line no-console
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on the port ${process.env.PORT || 8080}!`));

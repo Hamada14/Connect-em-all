@@ -26,7 +26,10 @@
     "bootstrap": "*",
     "prop-types": "*",
     "express-session": "*",
-    "cookie-parser": "*"
+    "cookie-parser": "*",
+    "moment": "*",
+    "bcrypt": "*",
+    "body-parser": "*"
   },
   "devDependencies": {
     "@babel/core": "*",
