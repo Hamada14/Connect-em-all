@@ -30,7 +30,6 @@
     "moment": "*",
     "bcryptjs": "*",
     "body-parser": "*",
-    "bcrypt": "*",
     "whatwg-fetch": "*"
   },
   "devDependencies": {

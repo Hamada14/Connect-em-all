@@ -80,10 +80,13 @@ app.post('/api/login', (req, res) => {
         }
         res.status(OK_STATUS_CODE);
         res.send({ errors: errors });
-        res.end()
+        res.end();
       })
   } else {
     errors.push(EMPTY_FIELDS_ERROR);
+    req.session.user = undefined;
+    res.send({ errors: errors });
+    res.end();
   }
 });
 
