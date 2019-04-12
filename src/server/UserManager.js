@@ -1,5 +1,5 @@
-const moment = require('moment')
-const bcrypt = require('bcrypt');
+const moment = require('moment');
+const bcrypt = require('bcryptjs');
 
 const db = require("./database_handler");
 

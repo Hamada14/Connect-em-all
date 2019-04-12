@@ -28,7 +28,7 @@
     "express-session": "*",
     "cookie-parser": "*",
     "moment": "*",
-    "bcrypt": "*",
+    "bcryptjs": "*",
     "body-parser": "*"
   },
   "devDependencies": {

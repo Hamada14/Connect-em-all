@@ -1,6 +1,7 @@
 const express = require('express');
 const os = require('os');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 
 const UserManager = require('./UserManager');
 
@@ -58,10 +59,15 @@ app.post('/api/register', async (req, res) => {
 
 app.post('/api/login', (req, res) => {
   userManager = new UserManager();
-  jsonUser = req.user;
+  jsonUser = req.body;
   userManager.getUser(jsonUser.email)
     .then(result => {
-      if(result && result[0].HASHED_PASSWORD === jsonUser.hashedPassword && result[0].SALT === jsonUser.passwordSalt) {
+      if(result && result.length > 0) {
+        let password = jsonUser.password;
+        let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
+        if(result[0].HASHED_PASSWORD !== hashedPassword) {
+          return res.send('Wrong email or password')
+        }
         newUser = {
           userName: result[0].FULL_NAME,
           email: result[0].EMAIL,
@@ -79,6 +85,21 @@ app.post('/api/login', (req, res) => {
       }
     }) 
 });
+
+app.get('/api/is_loggedin', (req, res) => {
+  let loggedInVeridict = {
+    loggedIn: false,
+    userName: null
+  }
+  if(req.session.user && req.cookies.user_sid) {
+    loggedInVeridict = {
+      loggedIn: true,
+      userName: req.session.user.email
+    }
+  } 
+  res.status(OK_STATUS_CODE);
+  res.send(loggedInVeridict);
+})
 
   
 // connection = db.connectToDatabase();
