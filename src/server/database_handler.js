@@ -53,7 +53,6 @@ function getUserDetailsByEmail(connection, email, databaseName) {
     useDatabase(connection, databaseName);
     sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
     console.log(sqlSelect);
-    let queryResult = null;
     return new Promise((resolve, reject) => {
         connection.query(sqlSelect, function (err, result) {
             if(err) {
@@ -65,6 +64,26 @@ function getUserDetailsByEmail(connection, email, databaseName) {
     });
 }
 
+function hasUserByEmail(connection, email, databaseName) {
+    useDatabase(connection, databaseName);
+    sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
+    console.log(sqlSelect);
+    return new Promise((resolve, reject) => {
+        connection.query(sqlSelect, function (err, result) {
+            if(err) {
+                console.log("error");
+                throw err;
+            }
+            let veridict = false;
+            if(result && result.length > 0) {
+                veridict = true;
+            }
+            resolve(veridict);
+        });
+    });
+} 
+
 exports.connectToDatabase = connectToDatabase; 
 exports.creatUser = creatUser;
 exports.getUserDetailsByEmail = getUserDetailsByEmail;
+exports.hasUserByEmail = hasUserByEmail;

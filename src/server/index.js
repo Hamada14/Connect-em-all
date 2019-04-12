@@ -3,8 +3,9 @@ const os = require('os');
 const UserManager = require('./UserManager');
 const app = express();
 const User = require("./User")
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const db = require('./database_handler');
 
 const OK_STATUS_CODE = 200;
 const ERROR_STATUS_CODE = 400;
@@ -48,9 +49,6 @@ app.post('/api/register', (req, res) => {
     }
 });
 
-// userManager = new UserManager();
-// userManager.getUser("toto.me@gmail.com").then(result => console.log(result[0].FULL_NAME));
-// console.log(result);
 
 app.post('/api/login', (req, res) => {
     userManager = new UserManager();
