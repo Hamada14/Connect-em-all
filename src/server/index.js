@@ -13,7 +13,7 @@ const OK_STATUS_CODE = 200;
 const ERROR_STATUS_CODE = 400;
 
 const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
-const EMPTY_FIELDS_ERROR = "fill in all the fields";
+const EMPTY_FIELDS_ERROR = "Fill in all the fields";
 
 // initialize cookie-parser to allow us access the cookies stored in the browser.
 app.use(cookieParser());
@@ -66,7 +66,7 @@ app.post('/api/login', (req, res) => {
           let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
           if(result[0].HASHED_PASSWORD !== hashedPassword) {
             errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
-            return res.send(errors)
+            res.send({ errors: errors });
           }
           req.session.user = {
 			      hashedPassword: result[0].HASHED_PASSWORD,
@@ -112,33 +112,23 @@ app.get('/api/sign_out', (req, res) => {
   res.end();
 })
 
-app.get('/api/update_info', async (req, res) => {
-  /*newUserInfo = {
-	oldPassword: req.body.oldPassword,
-  	password: req.body.password,
-	confirmPassword: req.body.confirmPassword,
-	fullName: req.body.fullName,
-	birthdate: req.body.birthdate
+app.post('/api/update_info', async (req, res) => {
+  let newUserInfo = {
+    oldPassword: req.body.oldPassword,
+    password: req.body.password,
+    confirmPassword: req.body.confirmPassword,
+    fullName: req.body.fullName,
+    birthdate: req.body.birthdate
   };
-*/
-  console.log(req.session.user.email);
-  newUserInfo = {
-	oldPassword: '12345678',
-  	password: 'abcdefgh',
-	confirmPassword: 'abcdefgh',
-	fullName: 'abc',
-	birthdate: ''
-  };
-
-
 
   const userManager = new UserManager();
-  const errors = userManager.updateUserInfo(req.session, newUserInfo);
+  const errors = await userManager.updateUserInfo(req.session, newUserInfo);
   if(errors.length == 0) {
-    res.status(OK_STATUS_CODE);
-  } else {
-    res.status(ERROR_STATUS_CODE);
+    req.session.user.fullName = newUserInfo.fullName;
+    req.session.user.birthdate = req.body.birthdate;
+    req.session.user.hashedPassword = bcrypt.hashSync(newUserInfo.password, req.session.user.passwordSalt);
   }
+  res.status(OK_STATUS_CODE);
   res.send({ errors: errors })
   res.end()
 });

@@ -50,6 +50,7 @@ export default class App extends Component {
         email={this.state.email}
         fullName={this.state.fullName}
         birthdate={this.state.birthdate}
+        loginManager={this}
       />
     )
   }
@@ -93,8 +94,7 @@ export default class App extends Component {
   }
 
   loginPage() {
-    const { loggedIn } = this.state;
-    if(loggedIn) {
+    if(this.state.loggedIn) {
       return this.redirectToHome();
     }
     return <LoginPage loginManager={this} />;

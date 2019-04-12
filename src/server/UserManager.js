@@ -40,21 +40,20 @@ class UserManager {
     let errors = await validateNewInfo(session, newUserInfo)
     try {
       if(errors.length == 0) {
-         let dbRow = {
+        let dbRow = {
           hashedPassword: bcrypt.hashSync(newUserInfo.password, session.user.passwordSalt),
           birthdate: newUserInfo.birthdate,
           fullName: newUserInfo.fullName
         }
-		db.updateUserInfo(connection, session.user.email, dbRow, databaseName)
+        db.updateUserInfo(connection, session.user.email, dbRow, databaseName)
       }else{
-		console.log(errors)
-		return errors;
+        return errors;
 	  }
     } catch(error) {
       console.log(error)
       return ["Congratulations for discovering a bug! please report"];
     }
-	return errors;
+    return errors;
   }
 
 
@@ -93,23 +92,20 @@ async function validateInformation(connection, databaseName, userInfo) {
 }
 
 async function validateNewInfo(session, newUserInfo){
-	errors = [];
-	let hashedPassword =
-			bcrypt.hashSync(newUserInfo.oldPassword, session.user.passwordSalt);
-	if(hashedPassword != session.user.hashedPassword){
-		errors.concat(WRONG_PASSWORD);
-	}
-	errors =
-		errors.concat(validatePassword(
-								newUserInfo.password, newUserInfo.confirmPassword));
-	errors = errors.concat(validateName(newUserInfo.fullName));
-	errors = errors.concat(validateBirthdate(newUserInfo.birthdate));
-	return errors.filter((e1) => e1 != null);
+  let errors = [];
+  let hashedPassword = bcrypt.hashSync(newUserInfo.oldPassword, session.user.passwordSalt);
+  if(hashedPassword != session.user.hashedPassword){
+    errors = errors.concat(WRONG_PASSWORD);
+  }
+  errors = errors.concat(validatePassword(newUserInfo.password, newUserInfo.confirmPassword));
+  errors = errors.concat(validateName(newUserInfo.fullName));
+  errors = errors.concat(validateBirthdate(newUserInfo.birthdate));
+  return errors.filter((e1) => e1 != null);
 }
 
 async function validateEmail(connection, databaseName, email) {
   let errors = []
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   let isValidEmail = re.test(String(email).toLowerCase());
   if(!isValidEmail)
     errors.push(INVALID_EMAIL_ERROR);

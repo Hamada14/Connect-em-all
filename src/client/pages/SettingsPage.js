@@ -8,7 +8,7 @@ export default class SettingsPage extends Component {
     super(props);
     this.state = {
       fullName : props.fullName,
-      birthdate : props.birthdate,
+      birthdate : props.birthdate.substring(0, 10),
       oldPassword : '',
       newPassword : '',
       confirmPassword : '',
@@ -16,7 +16,7 @@ export default class SettingsPage extends Component {
       loading : false,
       done : false
     };
-    console.log(props.birthdate)
+
     this.handleOldPasswordChange = this.handleOldPasswordChange.bind(this);
     this.handleNewPasswordChange = this.handleNewPasswordChange.bind(this);
     this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
@@ -51,7 +51,7 @@ export default class SettingsPage extends Component {
       fullName : this.state.fullName,
       birthdate : this.state.birthdate,
       oldPassword : this.state.oldPassword,
-      newPassword : this.state.newPassword,
+      password : this.state.newPassword,
       confirmPassword : this.state.confirmPassword,
     };
     let errors = [];
@@ -59,6 +59,7 @@ export default class SettingsPage extends Component {
     this.setState({ errors : [], loading : true });
     fetch('/api/update_info', {
       method : 'POST',
+      credentials: "same-origin",
       headers : { 'Content-Type' : 'application/json' },
       body : JSON.stringify(requestParams)
     }).then(res => res.json())
@@ -68,8 +69,15 @@ export default class SettingsPage extends Component {
           done = false
         }
         this.setState({ loading : false, errors : errors, done : done });
+        console.log('Update the name to be')
+        console.log(requestParams.fullName)
+        if(errors.length == 0) 
+          this.props.loginManager.updateLoggedStatus();
       })
-      .catch(_ => this.setState({ loading : false, done: false, errors : [ "Couldn't connect to the server" ] }));
+      .catch(_ => {
+        console.log(_)
+        this.setState({ loading : false, done: false, errors : [ "Couldn't connect to the server" ] })
+      });
   }
 
   render() {
@@ -131,7 +139,7 @@ export default class SettingsPage extends Component {
                       <Form.Label>Birthday</Form.Label>
                       <Form.Control
                         type="date"
-                        value={birthdate.substring(0, 10)}
+                        value={birthdate}
                         onChange={this.handleBirthdateChange}
                       />
                     </Form.Group>
