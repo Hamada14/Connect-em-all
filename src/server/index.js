@@ -8,13 +8,10 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const UserManager = require('./UserManager').UserManager;
-
-const userManagerUtil = require('./UserManager');
+const friendsManager = require('./FriendsManager');
 
 const OK_STATUS_CODE = 200;
 
-const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
-const EMPTY_FIELDS_ERROR = "Fill in all the fields";
 
 // initialize cookie-parser to allow us access the cookies stored in the browser.
 app.use(cookieParser());
@@ -112,6 +109,32 @@ app.post('/api/update_info', async (req, res) => {
   res.send({ errors: errors })
   res.end()
 });
+
+// request body contains firstUserEmail and secondUserEmail
+app.post('/api/are_friends', (req, res) => {
+  let firstUserEmail = req.body.firstUserEmail;
+  let secondUserEmail = req.body.secondUserEmail;
+  let errors = friendsManager.areFriends(firstUserEmail, secondUserEmail);
+  res.status(OK_STATUS_CODE)
+  res.send({ errors : errors })
+  res.end()
+});
+
+app.post('/api/add_friend', (req, res) => {
+
+});
+
+app.post('/api/accept_friend_request', (req, res) => {
+
+});
+
+app.post('/api/reject_friend_request', (req, res) => {
+
+});
+
+app.post('/api/get_friends_by_mail', (req, res) => {
+
+})
 
 
 // eslint-disable-next-line no-console

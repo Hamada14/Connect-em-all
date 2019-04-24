@@ -1,5 +1,7 @@
 var mysql = require('mysql');
 
+const utils = require('./utils');
+
 function connectToDatabase() {
     
   var connection = mysql.createConnection({
@@ -99,8 +101,25 @@ function updateUserInfo(connection, email, userInfo, databaseName){
   });
 }
 
+function areFriends(connection, databaseName, firstUserId, secondUserId) {
+  useDatabase(connection, databaseName);
+  let sqlQuery = "SELECT * FROM FRIEND WHERE USER_ID={0} AND FRIEND_ID={1};";
+  sqlQuery = utils.substituteParams(sqlQuery, [firstUserId, secondUserId]);
+  return new Promise((resolve, reject) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log('error in database, are friends');
+        throw err;
+      }
+      resolve(result);
+    })
+  })
+}  
+
+
 exports.connectToDatabase = connectToDatabase; 
 exports.creatUser = creatUser;
 exports.getUserDetailsByEmail = getUserDetailsByEmail;
 exports.hasUserByEmail = hasUserByEmail;
 exports.updateUserInfo = updateUserInfo;
+exports.areFriends = areFriends;
