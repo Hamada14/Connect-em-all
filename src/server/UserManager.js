@@ -5,6 +5,21 @@ const db = require("./database_handler");
 
 const User = require('./User');
 
+const DUPLICATE_EMAIL_ERROR = "Please use an unregistered email";
+const INVALID_EMAIL_ERROR = "Please use a valid email";
+const SHORT_PASSWORD_ERROR = "Please use password longer than 7 characters";
+const NON_MATCHING_PASSWORD_ERROR = "Please make sure password is confirmed correctly";
+const EMPTY_NAME_ERROR = "Please specify a name";
+const INVALID_BIRTHDATE_ERROR = "Please specify a valid birthday";
+const BIRTHDATE_IN_FUTURE_ERROR = "Come back when you're born";
+const WRONG_PASSWORD = "Wrong Password";
+const EMPTY_EMAIL_ERROR = "Empty email address, please add a valid email";
+const EMPTY_PASSWORD = "Empty password, please fill in a valid password";
+const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
+
+
+const saltRounds = 10;
+
 class UserManager {
   
   constructor() {
@@ -56,9 +71,6 @@ class UserManager {
     return errors;
   }
 
-
-
-
   getUser(email) {
     let connection = db.connectToDatabase();
     let user = new User(null);
@@ -68,17 +80,43 @@ class UserManager {
       return null;
     }
   }
-}
-const DUPLICATE_EMAIL_ERROR = "Please use an unregistered email";
-const INVALID_EMAIL_ERROR = "Please use a valid email";
-const SHORT_PASSWORD_ERROR = "Please use password longer than 7 characters";
-const NON_MATCHING_PASSWORD_ERROR = "Please make sure password is confirmed correctly";
-const EMPTY_NAME_ERROR = "Please specify a name";
-const INVALID_BIRTHDATE_ERROR = "Please specify a valid birthday";
-const BIRTHDATE_IN_FUTURE_ERROR = "Come back when you're born";
-const WRONG_PASSWORD = "Wrong Password"
 
-const saltRounds = 10;
+  validateLoginUser(jsonUser) {
+    return this.getUser(jsonUser.email).then(result => {
+      let errors = []
+      if(result && result.length > 0) {
+        let password = jsonUser.password;
+        let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
+        if(result[0].HASHED_PASSWORD !== hashedPassword) {
+          errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
+        }
+      } else {
+        errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
+      }
+      return errors
+    });    
+  }
+
+  validateUser(jsonUser) {
+    let errors = [];
+    if(checkEmptyString(jsonUser.email)) {
+      errors = errors.concat(EMPTY_EMAIL_ERROR)
+    }
+    if(checkEmptyString(jsonUser.password)) {
+      errors = errors.concat(EMPTY_PASSWORD);
+    }
+    if(errors.length > 0) {
+      return new Promise((resolve, reject) => {
+        resolve(errors)
+      });
+    }
+    return this.validateLoginUser(jsonUser);
+  }
+}
+
+function checkEmptyString(str) {
+  return !str || str.length == 0;
+}
 
 
 async function validateInformation(connection, databaseName, userInfo) {

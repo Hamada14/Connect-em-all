@@ -9,8 +9,9 @@ const session = require('express-session');
 
 const UserManager = require('./UserManager').UserManager;
 
+const userManagerUtil = require('./UserManager');
+
 const OK_STATUS_CODE = 200;
-const ERROR_STATUS_CODE = 400;
 
 const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
 const EMPTY_FIELDS_ERROR = "Fill in all the fields";
@@ -29,15 +30,6 @@ app.use(session({
   }
 }));
 
-// middleware function to check for logged-in users
-var sessionChecker = (req, res, next) => {
-  if (req.session.user && req.cookies.user_sid) {
-    res.redirect('/dashboard');
-  } else {
-    next();
-  }
-};
-
 
 app.use(express.static('dist'));
 
@@ -54,41 +46,63 @@ app.post('/api/register', async (req, res) => {
 });
 
 
-app.post('/api/login', (req, res) => {
+
+app.post('/api/login', async(req, res) => {
   const userManager = new UserManager();
   const jsonUser = req.body;
-  const errors = [];
-  if(jsonUser.email && jsonUser.email.length != 0 && jsonUser.password && jsonUser.password.length != 0) {
-    userManager.getUser(jsonUser.email)
-      .then(result => {
-        if(result && result.length > 0) {
-          let password = jsonUser.password;
-          let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
-          if(result[0].HASHED_PASSWORD !== hashedPassword) {
-            errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
-            res.send({ errors: errors });
-          }
-          req.session.user = {
-			      hashedPassword: result[0].HASHED_PASSWORD,
-			      passwordSalt: result[0].SALT,
-			      fullName: result[0].FULL_NAME,
-            email: result[0].EMAIL,
-            birthdate: result[0].BIRTH_DATE
-          };
-        } else {
-          errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
-        }
-        res.status(OK_STATUS_CODE);
-        res.send({ errors: errors });
-        res.end();
-      })
-  } else {
-    errors.push(EMPTY_FIELDS_ERROR);
-    req.session.user = undefined;
-    res.send({ errors: errors });
-    res.end();
-  }
+  let errors = await userManager.validateUser(jsonUser)
+  if(errors.length == 0) {
+    let user = await userManager.getUser(jsonUser.email);
+    req.session.user = {
+      hashedPassword: user[0].HASHED_PASSWORD,
+      passwordSalt: user[0].SALT,
+      fullName: user[0].FULL_NAME,
+      email: user[0].EMAIL,
+      birthdate: user[0].BIRTH_DATE
+    };
+  } 
+  res.status(OK_STATUS_CODE);
+  res.send({ errors: errors });
+  res.end();
+    
 });
+
+
+// app.post('/api/login', (req, res) => {
+//   const userManager = new UserManager();
+//   const jsonUser = req.body;
+//   const errors = [];
+//   if(jsonUser.email && jsonUser.email.length != 0 && jsonUser.password && jsonUser.password.length != 0) {
+//     userManager.getUser(jsonUser.email)
+//       .then(result => {
+//         if(result && result.length > 0) {
+//           let password = jsonUser.password;
+//           let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
+//           if(result[0].HASHED_PASSWORD !== hashedPassword) {
+//             errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
+//             res.send({ errors: errors });
+//           }
+//           req.session.user = {
+// 			      hashedPassword: result[0].HASHED_PASSWORD,
+// 			      passwordSalt: result[0].SALT,
+// 	          fullName: result[0].FULL_NAME,
+//             email: result[0].EMAIL,
+//             birthdate: result[0].BIRTH_DATE
+//           };
+//         } else {
+//           errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
+//         }
+//         res.status(OK_STATUS_CODE);
+//         res.send({ errors: errors });
+//         res.end();
+//       })
+//   } else {
+//     errors.push(EMPTY_FIELDS_ERROR);
+//     req.session.user = undefined;
+//     res.send({ errors: errors });
+//     res.end();
+//   }
+// });
 
 app.get('/api/is_logged_in', (req, res) => {
   let loggedInVeridict = {
