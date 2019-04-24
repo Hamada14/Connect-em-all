@@ -67,6 +67,43 @@ app.post('/api/login', async(req, res) => {
     
 });
 
+
+// app.post('/api/login', (req, res) => {
+//   const userManager = new UserManager();
+//   const jsonUser = req.body;
+//   const errors = [];
+//   if(jsonUser.email && jsonUser.email.length != 0 && jsonUser.password && jsonUser.password.length != 0) {
+//     userManager.getUser(jsonUser.email)
+//       .then(result => {
+//         if(result && result.length > 0) {
+//           let password = jsonUser.password;
+//           let hashedPassword = bcrypt.hashSync(password, result[0].SALT);
+//           if(result[0].HASHED_PASSWORD !== hashedPassword) {
+//             errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR)
+//             res.send({ errors: errors });
+//           }
+//           req.session.user = {
+// 			      hashedPassword: result[0].HASHED_PASSWORD,
+// 			      passwordSalt: result[0].SALT,
+// 	          fullName: result[0].FULL_NAME,
+//             email: result[0].EMAIL,
+//             birthdate: result[0].BIRTH_DATE
+//           };
+//         } else {
+//           errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
+//         }
+//         res.status(OK_STATUS_CODE);
+//         res.send({ errors: errors });
+//         res.end();
+//       })
+//   } else {
+//     errors.push(EMPTY_FIELDS_ERROR);
+//     req.session.user = undefined;
+//     res.send({ errors: errors });
+//     res.end();
+//   }
+// });
+
 app.get('/api/is_logged_in', (req, res) => {
   let loggedInVeridict = {
     loggedIn: false,
