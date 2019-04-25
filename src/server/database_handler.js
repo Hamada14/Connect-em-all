@@ -118,7 +118,7 @@ function areFriends(connection, databaseName, firstUserId, secondUserId) {
 
 function isFriendRequestSent(connection, databaseName, id1, id2) {
   useDatabase(connection, databaseName);
-  let sqlQuery = "SELECT FROM FRIEND_REQUEST WHERE USER_ID={0} AND FRIEND_ID={1};";
+  let sqlQuery = "SELECT * FROM FRIEND_REQUEST WHERE USER_ID={0} AND FRIEND_ID={1};";
   sqlQuery = utils.substituteParams(sqlQuery, [id1, id2]);
   return new Promise((resolve, reject) => {
     connection.query(sqlQuery, (err, result) => {
@@ -174,6 +174,36 @@ function addFriend(connection, databaseName, id1, id2) {
   })
 }
 
+function getFriendsById(connection, databaseName, id) {
+  useDatabase(connection, databaseName);
+  let sqlQuery = "SELECT * FROM FRIEND WHERE USER_ID={0};";
+  sqlQuery = utils.substituteParams(sqlQuery, [id]);
+  return new Promise((resolve, reject) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log("error in databse, in get friends by id");
+        throw err;
+      }
+      resolve(result);
+    })
+  })
+}
+
+function getUserById(connection, id) {
+  useDatabase(connection, databaseName);
+  let sqlQuery = "SELECT * FROM USER WHERE USER_ID={0}";
+  sqlQuery = utils.substituteParams(sqlQuery, [id]);
+  return new Promise((resolve, reject) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log("error in databse, in get user by id");
+        throw err;
+      }
+      resolve(result);
+    })
+  })
+}
+
 
 exports.connectToDatabase = connectToDatabase; 
 exports.creatUser = creatUser;
@@ -185,3 +215,5 @@ exports.isFriendRequestSent = isFriendRequestSent;
 exports.sendFriendRequest = sendFriendRequest;
 exports.removeFriendRequest = removeFriendRequest;
 exports.addFriend = addFriend;
+exports.getFriendsById = getFriendsById;
+exports.getUserById = getUserById;

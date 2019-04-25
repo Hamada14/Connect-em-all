@@ -120,6 +120,7 @@ app.post('/api/are_friends', async (req, res) => {
   res.end()
 });
 
+// request body contains firstUserEmail and secondUserEmail
 app.post('/api/add_friend', async (req, res) => {
   let firstUserEmail = req.body.firstUserEmail;
   let secondUserEmail = req.body.secondUserEmail;
@@ -129,6 +130,7 @@ app.post('/api/add_friend', async (req, res) => {
   res.end()
 });
 
+// request body contains firstUserEmail and secondUserEmail
 app.post('/api/accept_friend_request', async (req, res) => {
   let firstUserEmail = req.body.firstUserEmail;
   let secondUserEmail = req.body.secondUserEmail;
@@ -138,6 +140,7 @@ app.post('/api/accept_friend_request', async (req, res) => {
   res.end()
 });
 
+// request body contains firstUserEmail and secondUserEmail
 app.post('/api/reject_friend_request', async (req, res) => {
   let firstUserEmail = req.body.firstUserEmail;
   let secondUserEmail = req.body.secondUserEmail;
@@ -147,8 +150,17 @@ app.post('/api/reject_friend_request', async (req, res) => {
   res.end()
 });
 
-app.post('/api/get_friends_by_mail', (req, res) => {
-
+// request body contains userEmail
+// return response that contains errors and friends
+app.post('/api/get_friends_by_mail', async (req, res) => {
+  let userEmail = req.body.userEmail;
+  let response = await friendsManager.getFriends(userEmail);
+  res.status(OK_STATUS_CODE);
+  res.send({
+    errors: response.errors,
+    friends: response.friends
+  });
+  res.end()
 })
 
 
