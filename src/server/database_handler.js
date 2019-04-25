@@ -155,6 +155,25 @@ function removeFriendRequest(connection, databaseName, id1, id2) {
   });
 }
 
+function addFriend(connection, databaseName, id1, id2) {
+  useDatabase(connection, databaseName);
+  let sqlAdd = "INSERT INTO FRIEND (USER_ID, FRIEND_ID) VALUES (USER_ID={0} AND FRIEND_ID={1});";
+  let directAdd = utils.substituteParams(sqlAdd, [id1, id2]);
+  let reverseAdd = utils.substituteParams(sqlAdd, [id2, id1]);
+  connection.query(directAdd, (err, result) => {
+    if(err) {
+      console.log('error in database, in add friend' + id1 + '->' + id2);
+      throw err;
+    }
+    connection.query(reverseAdd, (err, result) => {
+      if(err) {
+        console.log('error in database, in add friend' + id2 + '->' + id1)
+        throw err;
+      }
+    })
+  })
+}
+
 
 exports.connectToDatabase = connectToDatabase; 
 exports.creatUser = creatUser;
@@ -165,3 +184,4 @@ exports.areFriends = areFriends;
 exports.isFriendRequestSent = isFriendRequestSent;
 exports.sendFriendRequest = sendFriendRequest;
 exports.removeFriendRequest = removeFriendRequest;
+exports.addFriend = addFriend;
