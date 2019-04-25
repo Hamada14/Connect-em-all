@@ -23,8 +23,9 @@ function connectToDatabase() {
 }
 
 function useDatabase(connection, databaseName) {
-  let sqlCommand = "USE " + databaseName + ";";
-  connection.query(sqlCommand, function (err, result) {
+  let sqlCmd = "USE {0};";
+  sqlCmd = utils.substituteParams(sqlCmd, [databaseName]);
+  connection.query(sqlCmd, function (err, result) {
     if (err) { 
       console.log(err);
       throw err;
@@ -34,13 +35,8 @@ function useDatabase(connection, databaseName) {
 
 function creatUser(connection, userParams, databaseName) {
   useDatabase(connection, databaseName);
-  let sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWORD, EMAIL, BIRTH_DATE) values (";
-  sqlAdd += "\'" + userParams.fullName + "\',";
-  sqlAdd += "\'" + userParams.salt + "\',";
-  sqlAdd += "\'" + userParams.hashedPassword + "\',";
-  sqlAdd += "\'" + userParams.email + "\',";
-  sqlAdd += "\'" + userParams.birthdate + "\');";
-  // sqlAdd = "select * from USER";
+  let sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWORD, EMAIL, BIRTH_DATE) values (\'{0}\', \'{1}\', \'{2}\', \'{3}\', \'{4}\');";
+  sqlAdd = utils.substituteParams(sqlAdd, [userParams.fullName, userParams.salt, userParams.hashedPassword, userParams.email, userParams.birthdate])
   console.log(sqlAdd);
   connection.query(sqlAdd, function (err, result) {
     if (err) { 
@@ -53,7 +49,8 @@ function creatUser(connection, userParams, databaseName) {
 
 function getUserDetailsByEmail(connection, email, databaseName) {
   useDatabase(connection, databaseName);
-  sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
+  sqlSelect = "SELECT * FROM USER WHERE email = \'{0}\';";
+  sqlSelect = utils.substituteParams(sqlSelect, [email]);
   console.log(sqlSelect);
   return new Promise((resolve, reject) => {
     connection.query(sqlSelect, function (err, result) {
@@ -68,7 +65,8 @@ function getUserDetailsByEmail(connection, email, databaseName) {
 
 function hasUserByEmail(connection, email, databaseName) {
   useDatabase(connection, databaseName);
-  let sqlSelect = "SELECT * FROM USER WHERE email = \'" + email + "\';";
+  let sqlSelect = "SELECT * FROM USER WHERE email = \'{0}\';";
+  sqlSelect = utils.substituteParams(sqlSelect, [email]);
   console.log(sqlSelect);
   return new Promise((resolve, reject) => {
     connection.query(sqlSelect, function (err, result) {
@@ -87,11 +85,8 @@ function hasUserByEmail(connection, email, databaseName) {
 
 function updateUserInfo(connection, email, userInfo, databaseName){
   useDatabase(connection, databaseName);
-  let sqlAdd = "UPDATE USER SET ";
-  sqlAdd += "FULL_NAME='" + userInfo.fullName + "',";
-  sqlAdd += "HASHED_PASSWORD='" + userInfo.hashedPassword + "',";
-  sqlAdd += "BIRTH_DATE='" + userInfo.birthdate + "'";
-  sqlAdd += "WHERE EMAIL='" + email + "';";
+  let sqlAdd = "UPDATE USER SET FULL_NAME='{0}', HASHED_PASSWORD='{1}', BIRTH_DATE='{2}' WHERE EMAIL='{3}';";
+  sqlAdd = utils.substituteParams(sqlAdd, [userInfo.fullName, userInfo.hashedPassword, userInfo.birthdate, email]);
   console.log(sqlAdd);
   connection.query(sqlAdd, function (err, result) {
     if (err) {
