@@ -129,8 +129,13 @@ app.post('/api/add_friend', async (req, res) => {
   res.end()
 });
 
-app.post('/api/accept_friend_request', (req, res) => {
-
+app.post('/api/accept_friend_request', async (req, res) => {
+  let firstUserEmail = req.body.firstUserEmail;
+  let secondUserEmail = req.body.secondUserEmail;
+  let errors = await friendsManager.rejectFriendRequest(firstUserEmail, secondUserEmail);
+  res.status(OK_STATUS_CODE)
+  res.send({ errors : errors })
+  res.end()
 });
 
 app.post('/api/reject_friend_request', (req, res) => {

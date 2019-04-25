@@ -143,6 +143,18 @@ function sendFriendRequest(connection, databaseName, id1, id2) {
   })
 }
 
+function removeFriendRequest(connection, databaseName, id1, id2) {
+  useDatabase(connection, databaseName);
+  let sqlRemove = "DELETE FROM FRIEND_REQUEST WHERE USER_ID={0} AND FRIEND_ID={1}";
+  sqlRemove = utils.substituteParams(sqlRemove, [id1, id2]);
+  connection.query(sqlQuery, (err, result) => {
+    if(err) {
+      console.log('error in database, in remove friend request');
+      throw err;
+    }
+  });
+}
+
 
 exports.connectToDatabase = connectToDatabase; 
 exports.creatUser = creatUser;
@@ -152,3 +164,4 @@ exports.updateUserInfo = updateUserInfo;
 exports.areFriends = areFriends;
 exports.isFriendRequestSent = isFriendRequestSent;
 exports.sendFriendRequest = sendFriendRequest;
+exports.removeFriendRequest = removeFriendRequest;
