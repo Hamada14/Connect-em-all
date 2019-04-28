@@ -163,6 +163,15 @@ app.post('/api/get_friends_by_mail', async (req, res) => {
   res.end()
 })
 
+app.get('/api/has_user_by_id', async (req, res) => {
+  let userId = req.body.userId;
+  const userManager = new UserManager();
+  let errors = await userManager.hasUserById(id);
+  res.status(OK_STATUS_CODE)
+  res.send({ errors: errors })
+  res.end()
+})
+
 
 // eslint-disable-next-line no-console
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on the port ${process.env.PORT || 8080}!`));

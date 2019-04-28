@@ -184,7 +184,7 @@ function getFriendsById(connection, databaseName, id) {
   })
 }
 
-function getUserById(connection, id) {
+function getUserById(connection, databaseName, id) {
   useDatabase(connection, databaseName);
   let sqlQuery = "SELECT * FROM USER WHERE USER_ID={0}";
   sqlQuery = utils.substituteParams(sqlQuery, [id]);

@@ -16,6 +16,7 @@ const WRONG_PASSWORD = "Wrong Password";
 const EMPTY_EMAIL_ERROR = "Empty email address, please add a valid email";
 const EMPTY_PASSWORD = "Empty password, please fill in a valid password";
 const WRONG_EMAIL_OR_PASSWORD_ERROR = "wrong email or password";
+const USER_DOESNOT_EXIST = "This user doesn't exist";
 
 
 const saltRounds = 10;
@@ -111,6 +112,16 @@ class UserManager {
       });
     }
     return this.validateLoginUser(jsonUser);
+  }
+
+  async hasUserById(userId) {
+    let errors = [];
+    let connection = db.connectToDatabase();
+    let users = await db.getUserById(connection, "social_media_db", userId);
+    if(!users || user.lengths == 0) {
+      errors = errors.concat(USER_DOESNOT_EXIST);
+    }
+    return errors;
   }
 }
 
