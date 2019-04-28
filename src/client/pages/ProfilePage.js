@@ -35,12 +35,20 @@ export default class ProfilePage extends Component {
   }
 
   componentDidMount() {
-    let requestParams = { userId: this.props.profileId };
-    fetch('/api/is_valid_user_id', {
-      method : 'POST',
+    this.update()
+  }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.profileId != prevProps.profileId) {
+      this.update()
+    }
+  }
+
+  update() {
+    fetch('/api/has_user_by_id?userId=' + this.props.profileId, {
+      method : 'GET',
       credentials: "same-origin",
       headers : { 'Content-Type' : 'application/json' },
-      body : JSON.stringify(requestParams)
     }).then(res => res.json())
       .then(result => {
         let errors = result.errors;
@@ -98,15 +106,15 @@ export default class ProfilePage extends Component {
   }
 
   renderTimeline() {
-    return <TimelineTab />
+    return <TimelineTab clientId={this.props.clientId} profileId={this.props.profileId} />
   }
 
   renderFriends() {
-    return <FriendsListTab />
+    return <FriendsListTab profileId={this.props.profileId} />
   }
 
   renderFriendRequests() {
-    return <FriendRequestsTab />
+    return <FriendRequestsTab profileId={this.props.profileId} />
   }
 
   renderMainContent() {

@@ -22,7 +22,7 @@ const USER_DOESNOT_EXIST = "This user doesn't exist";
 const saltRounds = 10;
 
 class UserManager {
-  
+
   constructor() {
 
   }
@@ -31,7 +31,7 @@ class UserManager {
     let connection = db.connectToDatabase();
     let databaseName = "social_media_db";
     let errors = await validateInformation(connection, databaseName, userParams)
-    try {    
+    try {
       if(errors.length == 0) {
         let salt = bcrypt.genSaltSync(saltRounds);
         let userRow = {
@@ -95,7 +95,7 @@ class UserManager {
         errors.push(WRONG_EMAIL_OR_PASSWORD_ERROR);
       }
       return errors
-    });    
+    });
   }
 
   validateUser(jsonUser) {
@@ -118,7 +118,7 @@ class UserManager {
     let errors = [];
     let connection = db.connectToDatabase();
     let users = await db.getUserById(connection, "social_media_db", userId);
-    if(!users || user.lengths == 0) {
+    if(!users || users.length == 0) {
       errors = errors.concat(USER_DOESNOT_EXIST);
     }
     return errors;
@@ -194,7 +194,7 @@ function validateBirthdate(birthdate) {
   return errors;
 }
 
-module.exports = { 
+module.exports = {
   UserManager,
   validateEmail,
   validatePassword,

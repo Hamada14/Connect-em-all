@@ -57,11 +57,11 @@ app.post('/api/login', async(req, res) => {
       birthdate: user[0].BIRTH_DATE,
       userId: user[0].USER_ID
     };
-  } 
+  }
   res.status(OK_STATUS_CODE);
   res.send({ errors: errors });
   res.end();
-    
+
 });
 
 app.get('/api/is_logged_in', (req, res) => {
@@ -165,9 +165,9 @@ app.post('/api/get_friends_by_mail', async (req, res) => {
 })
 
 app.get('/api/has_user_by_id', async (req, res) => {
-  let userId = req.body.userId;
+  let userId = req.query.userId;
   const userManager = new UserManager();
-  let errors = await userManager.hasUserById(id);
+  let errors = await userManager.hasUserById(userId);
   res.status(OK_STATUS_CODE)
   res.send({ errors: errors })
   res.end()
