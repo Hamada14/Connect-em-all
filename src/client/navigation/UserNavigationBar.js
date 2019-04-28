@@ -7,7 +7,7 @@ export default class UserNavigationBar extends Component {
     super(props);
     this.state = {
     }
-
+    console.log(props)
     this.signOut = this.signOut.bind(this)
   }
 
@@ -42,6 +42,8 @@ export default class UserNavigationBar extends Component {
               </Navbar.Text>
             </Navbar.Collapse>
             { searchBlock }
+            &nbsp;&nbsp;
+            <Button variant="outline-info" href={"#/profile/" + this.props.userId}>My Profile</Button>
             &nbsp;&nbsp;
             <Button variant="outline-warning" href="#/settings">Settings</Button>
             &nbsp;&nbsp;

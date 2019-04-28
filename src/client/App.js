@@ -5,6 +5,7 @@ import { HashRouter, Route, Redirect } from 'react-router-dom';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import SettingsPage from './pages/SettingsPage';
+import ProfilePage from "./pages/ProfilePage";
 
 import GenericNavigationBar from "./navigation/GenericNavigationBar";
 import UserNavigationBar from "./navigation/UserNavigationBar";
@@ -14,6 +15,7 @@ import { loadingBlock } from "./Util";
 export default class App extends Component {
   state = {
     loggedIn: false,
+    userId: undefined,
     email: undefined,
     fullName: undefined,
     birthdate: undefined,
@@ -25,6 +27,7 @@ export default class App extends Component {
     
     this.state = {
       loggedIn: undefined,
+      userId: undefined,
       email: undefined,
       fullName: undefined,
       birthdate: undefined,
@@ -35,6 +38,7 @@ export default class App extends Component {
     this.loginPage = this.loginPage.bind(this);
     this.registerPage = this.registerPage.bind(this);
     this.settingsPage = this.settingsPage.bind(this);
+    this.profilePage = this.profilePage.bind(this);
   }
   
   componentDidMount() {
@@ -58,6 +62,7 @@ export default class App extends Component {
   updateLoggedStatus() {
     this.setState({ loading: true });
     let loggedIn = false;
+    let userId = undefined;
     let email = undefined;
     let fullName = undefined;
     let birthdate = undefined;
@@ -70,11 +75,12 @@ export default class App extends Component {
       .then(result => {
         loggedIn = result.loggedIn;
         if(loggedIn) {
+          userId = result.userId;          
           email = result.email;
           fullName = result.fullName;
           birthdate = result.birthdate;
         }
-        this.setState({ loading: false, loggedIn: loggedIn, email: email, fullName: fullName, birthdate: birthdate });
+        this.setState({ loading: false, loggedIn: loggedIn, userId: userId, email: email, fullName: fullName, birthdate: birthdate });
       }).catch(_ => this.setState({ loading: false }));
   }
   
@@ -100,6 +106,16 @@ export default class App extends Component {
     return <LoginPage loginManager={this} />;
   }
 
+
+  profilePage(arg) {
+    if(!this.state.loggedIn) {
+      return this.redirectToLogin();
+    }
+    let profileUserId = arg.match.params.userId;
+    let clientUserId = this.state.userId;
+    return <ProfilePage clientId={clientUserId} profileId={profileUserId} />;
+  }
+
   redirectToHome() {
     return <Redirect to='/' />
   }
@@ -110,7 +126,16 @@ export default class App extends Component {
 
   render() {
     const loading = this.state.loading;
-    let navigationBar = this.state.loggedIn ? <UserNavigationBar loginManager={this} fullName={this.state.fullName} /> : <GenericNavigationBar />;
+    let navigationBar = <GenericNavigationBar />
+    if(this.state.loggedIn) {
+      navigationBar = (
+        <UserNavigationBar 
+          loginManager={this} 
+          fullName={this.state.fullName} 
+          userId={this.state.userId} 
+        />
+      );
+    }
     let router = (
       <HashRouter>
         {navigationBar}
@@ -119,6 +144,7 @@ export default class App extends Component {
         <Route exact path="/login" component={this.loginPage} />
         <Route exact path="/register" component={this.registerPage} />
         <Route exact path="/settings" component={this.settingsPage} />
+        <Route exact path="/profile/:userId" component={this.profilePage} />
       </HashRouter>
     )
     if(this.state.loggedIn == undefined) {
