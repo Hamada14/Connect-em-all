@@ -28,9 +28,7 @@ class UserManager {
   }
 
   async registerUser(userParams) {
-    let connection = db.connectToDatabase();
-    let databaseName = "social_media_db";
-    let errors = await validateInformation(connection, databaseName, userParams)
+    let errors = await validateInformation(userParams)
     try {
       if(errors.length == 0) {
         let salt = bcrypt.genSaltSync(saltRounds);
@@ -41,7 +39,7 @@ class UserManager {
           birthdate: userParams.birthdate,
           fullName: userParams.fullName
         }
-        db.creatUser(connection, userRow, databaseName);
+        db.creatUser(userRow);
       }
     } catch(error) {
       console.log(error)
@@ -51,8 +49,6 @@ class UserManager {
   }
 
   async updateUserInfo(session, newUserInfo) {
-    let connection = db.connectToDatabase();
-    let databaseName = "social_media_db";
     let errors = await validateNewInfo(session, newUserInfo)
     try {
       if(errors.length == 0) {
@@ -61,10 +57,10 @@ class UserManager {
           birthdate: newUserInfo.birthdate,
           fullName: newUserInfo.fullName
         }
-        db.updateUserInfo(connection, session.user.email, dbRow, databaseName)
+        db.updateUserInfo(session.user.email, dbRow)
       }else{
         return errors;
-	  }
+      }
     } catch(error) {
       console.log(error)
       return ["Congratulations for discovering a bug! please report"];
@@ -73,10 +69,9 @@ class UserManager {
   }
 
   getUser(email) {
-    let connection = db.connectToDatabase();
     let user = new User(null);
     try {
-      return user.getDetails(connection, 'social_media_db', email);
+      return user.getDetails(email);
     } catch(error) {
       return null;
     }
@@ -116,8 +111,7 @@ class UserManager {
 
   async hasUserById(userId) {
     let errors = [];
-    let connection = db.connectToDatabase();
-    let users = await db.getUserById(connection, "social_media_db", userId);
+    let users = await db.getUserById(userId);
     if(!users || users.length == 0) {
       errors = errors.concat(USER_DOESNOT_EXIST);
     }
@@ -130,9 +124,9 @@ function checkEmptyString(str) {
 }
 
 
-async function validateInformation(connection, databaseName, userInfo) {
+async function validateInformation(userInfo) {
   let errors = [];
-  let emailErrors = await validateEmail(connection, databaseName, userInfo.email);
+  let emailErrors = await validateEmail(userInfo.email);
   errors = errors.concat(emailErrors);
   errors = errors.concat(validatePassword(userInfo.password, userInfo.confirmPassword));
   errors = errors.concat(validateName(userInfo.fullName));
@@ -152,13 +146,13 @@ async function validateNewInfo(session, newUserInfo){
   return errors.filter((e1) => e1 != null);
 }
 
-async function validateEmail(connection, databaseName, email) {
+async function validateEmail(email) {
   let errors = []
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   let isValidEmail = re.test(String(email).toLowerCase());
   if(!isValidEmail)
     errors.push(INVALID_EMAIL_ERROR);
-  let duplicateEmail = await db.hasUserByEmail(connection, email, databaseName);
+  let duplicateEmail = await db.hasUserByEmail(email);
   if(duplicateEmail)
     errors.push(DUPLICATE_EMAIL_ERROR);
   return errors;

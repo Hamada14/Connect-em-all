@@ -24,7 +24,7 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       loggedIn: undefined,
       userId: undefined,
@@ -33,14 +33,14 @@ export default class App extends Component {
       birthdate: undefined,
       loading: true
     };
-  
+
     this.homePage = this.homePage.bind(this);
     this.loginPage = this.loginPage.bind(this);
     this.registerPage = this.registerPage.bind(this);
     this.settingsPage = this.settingsPage.bind(this);
     this.profilePage = this.profilePage.bind(this);
   }
-  
+
   componentDidMount() {
     this.updateLoggedStatus()
   }
@@ -50,7 +50,7 @@ export default class App extends Component {
       return this.redirectToLogin();
     }
     return (
-      <SettingsPage 
+      <SettingsPage
         email={this.state.email}
         fullName={this.state.fullName}
         birthdate={this.state.birthdate}
@@ -75,7 +75,7 @@ export default class App extends Component {
       .then(result => {
         loggedIn = result.loggedIn;
         if(loggedIn) {
-          userId = result.userId;          
+          userId = result.userId;
           email = result.email;
           fullName = result.fullName;
           birthdate = result.birthdate;
@@ -83,7 +83,7 @@ export default class App extends Component {
         this.setState({ loading: false, loggedIn: loggedIn, userId: userId, email: email, fullName: fullName, birthdate: birthdate });
       }).catch(_ => this.setState({ loading: false }));
   }
-  
+
   registerPage() {
     if(this.state.loggedIn) {
       return this.redirectToHome();
@@ -113,7 +113,7 @@ export default class App extends Component {
     }
     let profileUserId = arg.match.params.userId;
     let clientUserId = this.state.userId;
-    return <ProfilePage clientId={clientUserId} profileId={profileUserId} />;
+    return <ProfilePage clientId={clientUserId} profileId={profileUserId} fullName={this.state.fullName}/>;
   }
 
   redirectToHome() {
@@ -129,10 +129,10 @@ export default class App extends Component {
     let navigationBar = <GenericNavigationBar />
     if(this.state.loggedIn) {
       navigationBar = (
-        <UserNavigationBar 
-          loginManager={this} 
-          fullName={this.state.fullName} 
-          userId={this.state.userId} 
+        <UserNavigationBar
+          loginManager={this}
+          fullName={this.state.fullName}
+          userId={this.state.userId}
         />
       );
     }

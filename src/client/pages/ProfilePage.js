@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Nav } from 'react-bootstrap';
+import { Card, Container, Row, Col, Nav } from 'react-bootstrap';
 
 import { errorsBlock, loadingBlock } from '../Util';
 
@@ -26,7 +26,7 @@ export default class ProfilePage extends Component {
     this.state = {
       isLoading: true,
       errors: [],
-      currentTab: TABS.TIME_LINE
+      currentTab: TABS.TIME_LINE,
     };
 
     this.switchToTimeline = this.switchToTimeline.bind(this);
@@ -106,7 +106,7 @@ export default class ProfilePage extends Component {
   }
 
   renderTimeline() {
-    return <TimelineTab clientId={this.props.clientId} profileId={this.props.profileId} />
+    return <TimelineTab clientId={this.props.clientId} profileId={this.props.profileId} fullName={this.props.fullName}/>
   }
 
   renderFriends() {
@@ -140,8 +140,10 @@ export default class ProfilePage extends Component {
         <Row>
           <Col md={{ span: 12, offset: 0 }}>
             {nav}
-            {cont}
-            {loadingBlock(this.state.isLoading)}
+            <Card body>
+              {cont}
+              {loadingBlock(this.state.isLoading)}
+            </Card>
           </Col>
         </Row>
       </Container>

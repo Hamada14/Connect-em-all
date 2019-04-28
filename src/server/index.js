@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const UserManager = require('./UserManager').UserManager;
+const PostManager = require('./PostManager').PostManager;
+
 const friendsManager = require('./FriendsManager');
 
 const OK_STATUS_CODE = 200;
@@ -171,6 +173,24 @@ app.get('/api/has_user_by_id', async (req, res) => {
   res.status(OK_STATUS_CODE)
   res.send({ errors: errors })
   res.end()
+})
+
+app.post('/api/create_post', async (req, res) => {
+  let writer = req.body.userId;
+  let content = req.body.postContent;
+  const postManager = new PostManager();
+  postManager.createPost(writer, content);
+  res.status(OK_STATUS_CODE);
+  res.end();
+})
+
+app.get('/api/get_posts_by_user', async (req, res) => {
+  let userId = req.query.userId;
+  const postManager = new PostManager();
+  const posts = await postManager.getPostsByUser(userId);
+  res.status(OK_STATUS_CODE);
+  res.send({ posts: posts })
+  res.end();
 })
 
 
