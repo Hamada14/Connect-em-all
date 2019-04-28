@@ -22,10 +22,9 @@ app.use(session({
   secret: 'secret_session',
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    expires: 600000
-  }
+  expires: new Date(Date.now() + (30 * 86400 * 1000))
 }));
+
 
 
 app.use(express.static('dist'));
@@ -55,7 +54,8 @@ app.post('/api/login', async(req, res) => {
       passwordSalt: user[0].SALT,
       fullName: user[0].FULL_NAME,
       email: user[0].EMAIL,
-      birthdate: user[0].BIRTH_DATE
+      birthdate: user[0].BIRTH_DATE,
+      userId: user[0].USER_ID
     };
   } 
   res.status(OK_STATUS_CODE);
@@ -73,6 +73,7 @@ app.get('/api/is_logged_in', (req, res) => {
   if(req.session.user && req.cookies.user_sid) {
     loggedInVeridict = {
       loggedIn: true,
+      userId: req.session.user.userId,
       hashedPassword: req.session.user.hashedPassword,
       fullName: req.session.user.fullName,
       email: req.session.user.email,
