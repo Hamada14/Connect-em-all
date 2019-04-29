@@ -4,23 +4,22 @@ const utils = require('./utils');
 
 let databaseName = "social_media_db";
 
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'admin',
+  database: 'social_media_db'
+});
+
+connection.connect(function(err) {
+  if (err) {
+    console.log("ERROR CONNECTION");
+    throw err;
+  }
+  console.log("Connected!");
+});
+
 function connectToDatabase() {
-
-  var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'admin',
-    database: 'social_media_db'
-  });
-
-  connection.connect(function(err) {
-    if (err) {
-      console.log("ERROR CONNECTION");
-      throw err;
-    }
-    console.log("Connected!");
-  });
-
   return connection;
 }
 
@@ -53,13 +52,28 @@ function creatUser(userParams) {
 function getUserDetailsByEmail(email) {
   let connection = connectToDatabase();
   useDatabase(connection);
-  sqlSelect = "SELECT * FROM USER WHERE email = \'{0}\';";
+  let sqlSelect = "SELECT * FROM USER WHERE email = '{0}';";
   sqlSelect = utils.substituteParams(sqlSelect, [email]);
   console.log(sqlSelect);
   return new Promise((resolve, reject) => {
     connection.query(sqlSelect, function (err, result) {
       if(err) {
         console.log("error");
+        throw err;
+      }
+      resolve(result);
+    });
+  });
+}
+
+function getUserPersonalInfoById(userId) {
+  let connection = connectToDatabase();
+  useDatabase(connection);
+  let sqlSelect = "SELECT * FROM USER WHERE USER_ID = {0};";
+  sqlSelect = utils.substituteParams(sqlSelect, [userId]);
+  return new Promise((resolve, reject) => {
+    connection.query(sqlSelect, function (err, result) {
+      if(err) {
         throw err;
       }
       resolve(result);
@@ -152,7 +166,7 @@ function removeFriendRequest(id1, id2) {
   useDatabase(connection);
   let sqlRemove = "DELETE FROM FRIEND_REQUEST WHERE USER_ID={0} AND FRIEND_ID={1}";
   sqlRemove = utils.substituteParams(sqlRemove, [id1, id2]);
-  connection.query(sqlQuery, (err, result) => {
+  connection.query(sqlRemove, (err, result) => {
     if(err) {
       console.log('error in database, in remove friend request');
       throw err;
@@ -163,7 +177,7 @@ function removeFriendRequest(id1, id2) {
 function addFriend(id1, id2) {
   let connection = connectToDatabase();
   useDatabase(connection);
-  let sqlAdd = "INSERT INTO FRIEND (USER_ID, FRIEND_ID) VALUES (USER_ID={0} AND FRIEND_ID={1});";
+  let sqlAdd = "INSERT INTO FRIEND (USER_ID, FRIEND_ID) VALUES ({0},{1});";
   let directAdd = utils.substituteParams(sqlAdd, [id1, id2]);
   let reverseAdd = utils.substituteParams(sqlAdd, [id2, id1]);
   connection.query(directAdd, (err, result) => {
@@ -179,6 +193,27 @@ function addFriend(id1, id2) {
     })
   })
 }
+
+function deleteFriend(id1, id2) {
+  let connection = connectToDatabase();
+  useDatabase(connection);
+  let sqlRemove = "DELETE FROM FRIEND WHERE USER_ID={0} AND FRIEND_ID={1};";
+  let directRemove = utils.substituteParams(sqlRemove, [id1, id2]);
+  let reverseRemove = utils.substituteParams(sqlRemove, [id2, id1]);
+  connection.query(directRemove, (err, result) => {
+    if(err) {
+      console.log('error in database, in add friend' + id1 + '->' + id2);
+      throw err;
+    }
+    connection.query(reverseRemove, (err, result) => {
+      if(err) {
+        console.log('error in database, in add friend' + id2 + '->' + id1)
+        throw err;
+      }
+    })
+  })
+}
+
 
 function getFriendsById(id) {
   let connection = connectToDatabase();
@@ -260,3 +295,5 @@ exports.getFriendsById = getFriendsById;
 exports.getUserById = getUserById;
 exports.createPost = createPost;
 exports.getPostsByUser = getPostsByUser;
+exports.getUserPersonalInfoById = getUserPersonalInfoById;
+exports.deleteFriend = deleteFriend;

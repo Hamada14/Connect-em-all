@@ -115,9 +115,9 @@ app.post('/api/update_info', async (req, res) => {
 
 // request body contains firstUserEmail and secondUserEmail
 app.post('/api/are_friends', async (req, res) => {
-  let firstUserEmail = req.body.firstUserEmail;
-  let secondUserEmail = req.body.secondUserEmail;
-  let errors = await friendsManager.areFriends(firstUserEmail, secondUserEmail);
+  let userId1 = req.body.userId1;
+  let userId2 = req.body.userId2;
+  let errors = await friendsManager.areFriends(userId1, userId2);
   res.status(OK_STATUS_CODE)
   res.send({ errors : errors })
   res.end()
@@ -125,9 +125,19 @@ app.post('/api/are_friends', async (req, res) => {
 
 // request body contains firstUserEmail and secondUserEmail
 app.post('/api/add_friend', async (req, res) => {
-  let firstUserEmail = req.body.firstUserEmail;
-  let secondUserEmail = req.body.secondUserEmail;
-  let errors = await friendsManager.addFriend(firstUserEmail, secondUserEmail);
+  let userId = req.body.userId;
+  let friendId = req.body.friendId;
+  let errors = await friendsManager.addFriend(userId, friendId);
+  res.status(OK_STATUS_CODE)
+  res.send({ errors : errors })
+  res.end()
+});
+
+// request body contains firstUserEmail and secondUserEmail
+app.post('/api/delete_friend', async (req, res) => {
+  let userId = req.body.userId;
+  let friendId = req.body.friendId;
+  let errors = await friendsManager.deleteFriend(userId, friendId);
   res.status(OK_STATUS_CODE)
   res.send({ errors : errors })
   res.end()
@@ -135,9 +145,9 @@ app.post('/api/add_friend', async (req, res) => {
 
 // request body contains firstUserEmail and secondUserEmail
 app.post('/api/accept_friend_request', async (req, res) => {
-  let firstUserEmail = req.body.firstUserEmail;
-  let secondUserEmail = req.body.secondUserEmail;
-  let errors = await friendsManager.acceptFriendRequest(firstUserEmail, secondUserEmail);
+  let userId = req.body.userId;
+  let friendId = req.body.friendId;
+  let errors = await friendsManager.acceptFriendRequest(userId, friendId);
   res.status(OK_STATUS_CODE)
   res.send({ errors : errors })
   res.end()
@@ -145,13 +155,22 @@ app.post('/api/accept_friend_request', async (req, res) => {
 
 // request body contains firstUserEmail and secondUserEmail
 app.post('/api/reject_friend_request', async (req, res) => {
-  let firstUserEmail = req.body.firstUserEmail;
-  let secondUserEmail = req.body.secondUserEmail;
-  let errors = await friendsManager.rejectFriendRequest(firstUserEmail, secondUserEmail);
+  let userId = req.body.userId;
+  let friendId = req.body.friendId;
+  let errors = await friendsManager.rejectFriendRequest(userId, friendId);
   res.status(OK_STATUS_CODE)
   res.send({ errors : errors })
   res.end()
 });
+
+app.post('/api/has_friend_request', async (req, res) => {
+  let userId = req.body.userId;
+  let friendId = req.body.friendId;
+  let hasFriendRequest = await friendsManager.hasFriendRequest(userId, friendId);
+  res.status(OK_STATUS_CODE);
+  res.send({ hasFriendRequest: hasFriendRequest });
+  res.end();
+})
 
 // request body contains userEmail
 // return response that contains errors and friends
@@ -193,6 +212,14 @@ app.get('/api/get_posts_by_user', async (req, res) => {
   res.end();
 })
 
+app.post('/api/get_user_personal_info', async (req, res) => {
+  let userId = req.body.userId;
+  const userManager = new UserManager();
+  let personalInfo = await userManager.getUserPersonalInfo(userId);
+  res.status(OK_STATUS_CODE);
+  res.send(personalInfo);
+  res.end();
+});
 
 // eslint-disable-next-line no-console
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on the port ${process.env.PORT || 8080}!`));

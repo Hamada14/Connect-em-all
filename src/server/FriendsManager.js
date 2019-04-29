@@ -10,84 +10,63 @@ const FRIEND_SENT_YOU_REQUEST = "You hava a friend request from";
 const NO_FRIEND_REQUEST_REMOVE = "No friend request to cancel"
 const NO_FRIEND_REQUEST_SENT = "No friend request sent";
 
-async function areFriends(firstUserEmail, secondUserEmail) {
-  let firstUser = await db.getUserDetailsByEmail(firstUserEmail, DATABASE_NAME);
-  let secondUser = await db.getUserDetailsByEmail(secondUserEmail, DATABASE_NAME);
-
-  if(firstUser.length == 0 || secondUser.length == 0) {
-    return [NO_USER_BY_EMAIL_ERR];
-  } else {
-    let result = await db.areFriends(DATABASE_NAME, firstUser[0].USER_ID, secondUser[0].USER_ID);
-    if(result && result.length > 0) {
-      return [ARE_NOT_FRIENDS];
-    }
+async function areFriends(userId1, userId2) {
+  let result1 = await db.areFriends(userId1, userId2);
+  let result2 = await db.areFriends(userId2, userId1);
+  if((result1 && result1.length > 0) || (result2 && result2.length > 0)) {
     return [];
   }
+  return [ARE_NOT_FRIENDS];
 }
 
-async function addFriend(firstUserEmail, secondUserEmail) {
-  let firstUser = await db.getUserDetailsByEmail(firstUserEmail, DATABASE_NAME);
-  let secondUser = await db.getUserDetailsByEmail(secondUserEmail, DATABASE_NAME);
-  if(firstUser.length == 0 || secondUser.length == 0) {
-    return [NO_USER_BY_EMAIL_ERR];
-  } else {
-    let id1 = firstUser[0].USER_ID;
-    let id2 = secondUser[0].USER_ID;
-    let friendsCheck = await db.areFriends(DATABASE_NAME, id1, id1);
-    if(!friendsCheck && friendsCheck.length == 0) {
-      return [ALREADY_FRIENDS_ERR];
-    }
-    let friendRequestSent = await db.isFriendRequestSent(DATABASE_NAME, id1, id2);
-    if(friendRequestSent && friendRequestSent.length > 0) {
-      return [FRIEND_REQUEST_ALREADY_SENT];
-    }
-    let friendSentYouRequest = await db.isFriendRequestSent(DATABASE_NAME, id2, id1);
-    if(friendSentYouRequest && friendSentYouRequest.length > 0) {
-      return [FRIEND_SENT_YOU_REQUEST + " " + secondUserEmail];
-    }
-    db.sendFriendRequest(DATABASE_NAME, id1, id2);
-    return [];
+async function addFriend(userId, friendId) {
+  let friendsCheck = await db.areFriends(userId, friendId);
+  if(friendsCheck && friendsCheck.length != 0) {
+    return [ALREADY_FRIENDS_ERR];
   }
+  let friendRequestSent = await db.isFriendRequestSent(userId, friendId);
+  if(friendRequestSent && friendRequestSent.length > 0) {
+    return [FRIEND_REQUEST_ALREADY_SENT];
+  }
+  let friendSentYouRequest = await db.isFriendRequestSent(friendId, userId);
+  if(friendSentYouRequest && friendSentYouRequest.length > 0) {
+    return [FRIEND_SENT_YOU_REQUEST + " " + friendId];
+  }
+  db.sendFriendRequest(userId, friendId);
+  return [];
 }
 
-async function rejectFriendRequest(firstUserEmail, secondUserEmail) {
-  let firstUser = await db.getUserDetailsByEmail(firstUserEmail, DATABASE_NAME);
-  let secondUser = await db.getUserDetailsByEmail(secondUserEmail, DATABASE_NAME);
-  if(firstUser.length == 0 || secondUser.length == 0) {
-    return [NO_USER_BY_EMAIL_ERR];
-  } else {
-    let id1 = firstUser[0].USER_ID;
-    let id2 = secondUser[0].USER_ID;
-    let friendRequestSent = await db.isFriendRequestSent(DATABASE_NAME, id2, id1);
-    if(!friendRequestSent || friendRequestSent.length == 0) {
-      return [NO_FRIEND_REQUEST_REMOVE];
-    }
-    db.removeFriendRequest(DATABASE_NAME, id1, id2);
-    return [];
+async function rejectFriendRequest(userId, friendId) {
+  let friendRequestSent = await db.isFriendRequestSent(userId, friendId);
+  if(!friendRequestSent || friendRequestSent.length == 0) {
+    return [NO_FRIEND_REQUEST_REMOVE];
   }
+  db.removeFriendRequest(userId, friendId);
+  return [];
 }
 
-async function acceptFriendRequest(firstUserEmail, secondUserEmail) {
-  let firstUser = await db.getUserDetailsByEmail(firstUserEmail, DATABASE_NAME);
-  let secondUser = await db.getUserDetailsByEmail(secondUserEmail, DATABASE_NAME);
-  if(firstUser.length == 0 || secondUser.length == 0) {
-    return [NO_USER_BY_EMAIL_ERR];
-  } else {
-    let id1 = firstUser[0].USER_ID;
-    let id2 = secondUser[0].USER_ID;
-    let friendRequestSent = await db.isFriendRequestSent(DATABASE_NAME, id2, id1);
-    if(!friendRequestSent || friendRequestSent.length == 0) {
-      return [NO_FRIEND_REQUEST_SENT];
-    }
-    db.removeFriendRequest(DATABASE_NAME, id1, id2);
-    db.addFriend(DATABASE_NAME, id1, id2);
+async function acceptFriendRequest(userId, friendId) {
+  let friendRequestSent = await db.isFriendRequestSent(userId, friendId);
+  if(!friendRequestSent || friendRequestSent.length == 0) {
+    return [NO_FRIEND_REQUEST_SENT];
   }
+  await db.removeFriendRequest(userId, friendId);
+  await db.addFriend(userId, friendId);
+}
+
+async function deleteFriend(userId, friendId) {
+  await db.deleteFriend(userId, friendId);
+}
+
+async function hasFriendRequest(userId, friendId) {
+  let friendRequestSent = await db.isFriendRequestSent(userId, friendId);
+  return friendRequestSent && friendRequestSent.length != 0;
 }
 
 async function getFriendsByIds(friendPairs) {
   let friends = [];
   for(let friendPair in friendPairs) {
-    let friendDetails = await db.getUserById(DATABASE_NAME, friendPair.FRIEND_ID);
+    let friendDetails = await db.getUserById(friendPair.FRIEND_ID);
     let friend = {
       email: friendDetails[0].EMAIL,
       name: friendDetails[0].FULL_NAME
@@ -97,18 +76,12 @@ async function getFriendsByIds(friendPairs) {
   return friends;
 }
 
-async function getFriends(email) {
+async function getFriends(userId) {
   let response = {
     errors: [],
     friends: []
   }
-  let user = await db.getUserDetailsByEmail(email);
-  if(user.length == 0) {
-    response.errors = [NO_USER_BY_EMAIL_ERR];
-    return response;
-  }
-  let id = user[0].USER_ID;
-  let friendIds = await db.getFriendsById(id);
+  let friendIds = await db.getFriendsById(userId);
   response.friends = await getFriendsByIds(friendIds);
   return response;
 }
@@ -118,5 +91,7 @@ module.exports = {
   addFriend,
   rejectFriendRequest,
   acceptFriendRequest,
-  getFriends
+  getFriends,
+  hasFriendRequest,
+  deleteFriend
 }

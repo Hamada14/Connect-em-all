@@ -30,6 +30,15 @@ export default class TimelineTab extends Component {
     this.setState({ posts: posts, isLoading: false });
   }
 
+
+  async componentDidUpdate(prevProps) {
+    if(this.props.profileId != prevProps.profileId) {
+      this.setState({ isLoading: true, posts: [], newPostContent: '' });
+      let posts = await this.getAllPosts();
+      this.setState({ posts: posts, isLoading: false });
+    }
+  }
+
   getAllPosts() {
     return fetch('/api/get_posts_by_user?userId=' + this.props.profileId,
       {

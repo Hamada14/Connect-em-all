@@ -77,6 +77,11 @@ class UserManager {
     }
   }
 
+  async getUserPersonalInfo(userId) {
+    let personalInfo = await db.getUserPersonalInfoById(userId);
+    return { fullName: personalInfo[0].FULL_NAME, birthdate: personalInfo[0].BIRTH_DATE, email: personalInfo[0].EMAIL }
+  }
+
   validateLoginUser(jsonUser) {
     return this.getUser(jsonUser.email).then(result => {
       let errors = []
