@@ -218,7 +218,9 @@ function deleteFriend(id1, id2) {
 function getFriendsById(id) {
   let connection = connectToDatabase();
   useDatabase(connection);
-  let sqlQuery = "SELECT * FROM FRIEND WHERE USER_ID={0};";
+  let sqlQuery = "SELECT FRIEND.FRIEND_ID as USER_ID, USER.FULL_NAME AS FULL_NAME," +
+    "USER.EMAIL AS EMAIL FROM FRIEND INNER JOIN USER ON FRIEND.FRIEND_ID = USER.USER_ID " +
+    "WHERE FRIEND.USER_ID = {0};";
   sqlQuery = utils.substituteParams(sqlQuery, [id]);
   return new Promise((resolve, reject) => {
     connection.query(sqlQuery, (err, result) => {

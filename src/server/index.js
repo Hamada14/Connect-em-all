@@ -174,14 +174,11 @@ app.post('/api/has_friend_request', async (req, res) => {
 
 // request body contains userEmail
 // return response that contains errors and friends
-app.post('/api/get_friends_by_mail', async (req, res) => {
-  let userEmail = req.body.userEmail;
-  let response = await friendsManager.getFriends(userEmail);
+app.post('/api/get_friends', async (req, res) => {
+  let userId = req.body.userId;
+  let response = await friendsManager.getFriends(userId);
   res.status(OK_STATUS_CODE);
-  res.send({
-    errors: response.errors,
-    friends: response.friends
-  });
+  res.send({ friends: response });
   res.end()
 })
 

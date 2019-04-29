@@ -63,27 +63,9 @@ async function hasFriendRequest(userId, friendId) {
   return friendRequestSent && friendRequestSent.length != 0;
 }
 
-async function getFriendsByIds(friendPairs) {
-  let friends = [];
-  for(let friendPair in friendPairs) {
-    let friendDetails = await db.getUserById(friendPair.FRIEND_ID);
-    let friend = {
-      email: friendDetails[0].EMAIL,
-      name: friendDetails[0].FULL_NAME
-    };
-    friends = friends.concat(friend);
-  }
-  return friends;
-}
-
 async function getFriends(userId) {
-  let response = {
-    errors: [],
-    friends: []
-  }
-  let friendIds = await db.getFriendsById(userId);
-  response.friends = await getFriendsByIds(friendIds);
-  return response;
+  let friends = await db.getFriendsById(userId);
+  return friends.map(friend => { return { userId: friend.USER_ID, email: friend.EMAIL, fullName: friend.FULL_NAME }});
 }
 
 module.exports = {
