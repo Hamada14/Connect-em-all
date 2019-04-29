@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Friend from './Friend';
 
+import { loadingBlock } from '../../Util';
+
 export default class FriendsListTab extends Component {
 
   state = {
@@ -55,6 +57,7 @@ export default class FriendsListTab extends Component {
   render() {
     return (
       <>
+        {loadingBlock(this.state.isLoading)}
         {this.renderFriends()}
       </>
     );

@@ -275,7 +275,23 @@ function getPostsByUser(userId) {
   return new Promise((resolve) => {
     connection.query(sqlQuery, (err, result) => {
       if(err) {
-        console.log("error in databse, in get user by id");
+        throw err;
+      }
+      resolve(result);
+    });
+  });
+}
+
+function getUserFriendRequests(userId) {
+  let connection = connectToDatabase();
+  useDatabase(connection);
+  let sqlQuery = "SELECT FRIEND_REQUEST.USER_ID as USER_ID, USER.FULL_NAME AS FULL_NAME, USER.EMAIL AS EMAIL " +
+    "FROM FRIEND_REQUEST INNER JOIN USER ON FRIEND_REQUEST.USER_ID = USER.USER_ID WHERE " +
+    "FRIEND_REQUEST.FRIEND_ID = {0};"
+  sqlQuery = utils.substituteParams(sqlQuery, [userId]);
+  return new Promise((resolve) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
         throw err;
       }
       resolve(result);
@@ -299,3 +315,4 @@ exports.createPost = createPost;
 exports.getPostsByUser = getPostsByUser;
 exports.getUserPersonalInfoById = getUserPersonalInfoById;
 exports.deleteFriend = deleteFriend;
+exports.getUserFriendRequests = getUserFriendRequests;

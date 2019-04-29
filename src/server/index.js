@@ -218,5 +218,13 @@ app.post('/api/get_user_personal_info', async (req, res) => {
   res.end();
 });
 
+app.post('/api/get_user_friend_requests', async (req, res) => {
+  let userId = req.body.userId;
+  let friendRequests = await friendsManager.getFriendRequests(userId);
+  res.status(OK_STATUS_CODE);
+  res.send({ friendRequests: friendRequests });
+  res.end();
+})
+
 // eslint-disable-next-line no-console
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on the port ${process.env.PORT || 8080}!`));

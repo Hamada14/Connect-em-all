@@ -68,6 +68,11 @@ async function getFriends(userId) {
   return friends.map(friend => { return { userId: friend.USER_ID, email: friend.EMAIL, fullName: friend.FULL_NAME }});
 }
 
+async function getFriendRequests(userId) {
+  let friendRequests = await db.getUserFriendRequests(userId);
+  return friendRequests.map(request => { return { userId: request.USER_ID, email: request.EMAIL, fullName: request.FULL_NAME }});
+}
+
 module.exports = {
   areFriends,
   addFriend,
@@ -75,5 +80,6 @@ module.exports = {
   acceptFriendRequest,
   getFriends,
   hasFriendRequest,
-  deleteFriend
+  deleteFriend,
+  getFriendRequests
 }
