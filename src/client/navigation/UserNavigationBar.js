@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import SearchBox from './SearchBox'
 
 export default class UserNavigationBar extends Component {
 
@@ -22,10 +23,7 @@ export default class UserNavigationBar extends Component {
 
   render() {
     const searchBlock = (
-      <Form inline>
-        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-        <Button variant="outline-info">Search</Button>
-      </Form>
+      <SearchBox />
     )
     return (
       <React.Fragment>

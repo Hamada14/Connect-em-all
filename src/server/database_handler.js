@@ -6,8 +6,8 @@ let databaseName = "social_media_db";
 
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'admin',
+  user: 'moamen',
+  password: 'mysqlserver',
   database: 'social_media_db'
 });
 

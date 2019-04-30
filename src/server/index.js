@@ -226,5 +226,21 @@ app.post('/api/get_user_friend_requests', async (req, res) => {
   res.end();
 })
 
+app.post('/api/search_user_by_email', async (req, res) => {
+  let email = req.body.email;
+  const userManager = new UserManager();
+  let user = await userManager.getUser(email);
+  let errors = [];
+  if(!user || !user[0] || user.length == 0) {
+    errors = errors.concat("No user by this email");
+  }
+  res.status(OK_STATUS_CODE);
+  res.send({
+    userId: user && user[0] ? user[0].USER_ID : -1,
+    errors: errors
+  });
+  res.end();
+})
+
 // eslint-disable-next-line no-console
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on the port ${process.env.PORT || 8080}!`));
