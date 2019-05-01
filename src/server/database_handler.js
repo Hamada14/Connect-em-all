@@ -2,12 +2,10 @@ var mysql = require('mysql');
 
 const utils = require('./utils');
 
-let databaseName = "social_media_db";
-
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'admin',
+  user: 'moamen',
+  password: 'mysqlserver',
   database: 'social_media_db'
 });
 
@@ -19,24 +17,8 @@ connection.connect(function(err) {
   console.log("Connected!");
 });
 
-function connectToDatabase() {
-  return connection;
-}
-
-function useDatabase(connection) {
-  let sqlCmd = "USE {0};";
-  sqlCmd = utils.substituteParams(sqlCmd, [databaseName]);
-  connection.query(sqlCmd, function (err, result) {
-    if (err) {
-      console.log(err);
-      throw err;
-    }
-  });
-}
 
 function creatUser(userParams) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWORD, EMAIL, BIRTH_DATE) values (\'{0}\', \'{1}\', \'{2}\', \'{3}\', \'{4}\');";
   sqlAdd = utils.substituteParams(sqlAdd, [userParams.fullName, userParams.salt, userParams.hashedPassword, userParams.email, userParams.birthdate])
   console.log(sqlAdd);
@@ -50,8 +32,6 @@ function creatUser(userParams) {
 }
 
 function getUserDetailsByEmail(email) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlSelect = "SELECT * FROM USER WHERE email = '{0}';";
   sqlSelect = utils.substituteParams(sqlSelect, [email]);
   console.log(sqlSelect);
@@ -67,8 +47,6 @@ function getUserDetailsByEmail(email) {
 }
 
 function getUserPersonalInfoById(userId) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlSelect = "SELECT * FROM USER WHERE USER_ID = {0};";
   sqlSelect = utils.substituteParams(sqlSelect, [userId]);
   return new Promise((resolve, reject) => {
@@ -82,8 +60,6 @@ function getUserPersonalInfoById(userId) {
 }
 
 function hasUserByEmail(email) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlSelect = "SELECT * FROM USER WHERE email = \'{0}\';";
   sqlSelect = utils.substituteParams(sqlSelect, [email]);
   console.log(sqlSelect);
@@ -103,8 +79,6 @@ function hasUserByEmail(email) {
 }
 
 function updateUserInfo(email, userInfo){
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlAdd = "UPDATE USER SET FULL_NAME='{0}', HASHED_PASSWORD='{1}', BIRTH_DATE='{2}' WHERE EMAIL='{3}';";
   sqlAdd = utils.substituteParams(sqlAdd, [userInfo.fullName, userInfo.hashedPassword, userInfo.birthdate, email]);
   console.log(sqlAdd);
@@ -117,8 +91,6 @@ function updateUserInfo(email, userInfo){
 }
 
 function areFriends(firstUserId, secondUserId) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "SELECT * FROM FRIEND WHERE USER_ID={0} AND FRIEND_ID={1};";
   sqlQuery = utils.substituteParams(sqlQuery, [firstUserId, secondUserId]);
   return new Promise((resolve, reject) => {
@@ -133,8 +105,6 @@ function areFriends(firstUserId, secondUserId) {
 }
 
 function isFriendRequestSent(id1, id2) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "SELECT * FROM FRIEND_REQUEST WHERE USER_ID={0} AND FRIEND_ID={1};";
   sqlQuery = utils.substituteParams(sqlQuery, [id1, id2]);
   return new Promise((resolve, reject) => {
@@ -149,8 +119,6 @@ function isFriendRequestSent(id1, id2) {
 }
 
 function sendFriendRequest(id1, id2) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlAdd = "INSERT INTO FRIEND_REQUEST (USER_ID, FRIEND_ID) VALUES ({0}, {1});";
   sqlAdd = utils.substituteParams(sqlAdd, [id1, id2]);
   connection.query(sqlAdd, (err, result) => {
@@ -162,8 +130,6 @@ function sendFriendRequest(id1, id2) {
 }
 
 function removeFriendRequest(id1, id2) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlRemove = "DELETE FROM FRIEND_REQUEST WHERE USER_ID={0} AND FRIEND_ID={1}";
   sqlRemove = utils.substituteParams(sqlRemove, [id1, id2]);
   connection.query(sqlRemove, (err, result) => {
@@ -175,8 +141,6 @@ function removeFriendRequest(id1, id2) {
 }
 
 function addFriend(id1, id2) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlAdd = "INSERT INTO FRIEND (USER_ID, FRIEND_ID) VALUES ({0},{1});";
   let directAdd = utils.substituteParams(sqlAdd, [id1, id2]);
   let reverseAdd = utils.substituteParams(sqlAdd, [id2, id1]);
@@ -195,8 +159,6 @@ function addFriend(id1, id2) {
 }
 
 function deleteFriend(id1, id2) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlRemove = "DELETE FROM FRIEND WHERE USER_ID={0} AND FRIEND_ID={1};";
   let directRemove = utils.substituteParams(sqlRemove, [id1, id2]);
   let reverseRemove = utils.substituteParams(sqlRemove, [id2, id1]);
@@ -216,8 +178,6 @@ function deleteFriend(id1, id2) {
 
 
 function getFriendsById(id) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "SELECT FRIEND.FRIEND_ID as USER_ID, USER.FULL_NAME AS FULL_NAME," +
     "USER.EMAIL AS EMAIL FROM FRIEND INNER JOIN USER ON FRIEND.FRIEND_ID = USER.USER_ID " +
     "WHERE FRIEND.USER_ID = {0};";
@@ -234,8 +194,6 @@ function getFriendsById(id) {
 }
 
 function getUserById(id) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "SELECT * FROM USER WHERE USER_ID={0}";
   sqlQuery = utils.substituteParams(sqlQuery, [id]);
   return new Promise((resolve, reject) => {
@@ -250,8 +208,6 @@ function getUserById(id) {
 }
 
 function createPost(writer, content) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "INSERT INTO POST(CONTENT, USER_ID) VALUES (\"{0}\", {1})";
   sqlQuery = utils.substituteParams(sqlQuery, [content, writer]);
   return new Promise((resolve) => {
@@ -267,8 +223,6 @@ function createPost(writer, content) {
 }
 
 function getPostsByUser(userId) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "select POST.CONTENT, USER.FULL_NAME as FULL_NAME, USER.EMAIL as EMAIL, POST.CREATED_AT as CREATED_AT from POST," +
     "USER where POST.USER_ID = USER.USER_ID AND USER.USER_ID = {0} ORDER BY CREATED_AT DESC;"
   sqlQuery = utils.substituteParams(sqlQuery, [userId]);
@@ -283,8 +237,6 @@ function getPostsByUser(userId) {
 }
 
 function getUserFriendRequests(userId) {
-  let connection = connectToDatabase();
-  useDatabase(connection);
   let sqlQuery = "SELECT FRIEND_REQUEST.USER_ID as USER_ID, USER.FULL_NAME AS FULL_NAME, USER.EMAIL AS EMAIL " +
     "FROM FRIEND_REQUEST INNER JOIN USER ON FRIEND_REQUEST.USER_ID = USER.USER_ID WHERE " +
     "FRIEND_REQUEST.FRIEND_ID = {0};"
@@ -299,7 +251,6 @@ function getUserFriendRequests(userId) {
   });
 }
 
-exports.connectToDatabase = connectToDatabase;
 exports.creatUser = creatUser;
 exports.getUserDetailsByEmail = getUserDetailsByEmail;
 exports.hasUserByEmail = hasUserByEmail;

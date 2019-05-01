@@ -92,14 +92,14 @@ describe("Validate email", () => {
     it('Test correct email format', async() => {
         dbHandler.hasUserByEmail.mockReturnValue(false);
         let email = "moamenelbaroudy.me@gmail.com";
-        let errors = await userManager.validateEmail(null, null, email);
+        let errors = await userManager.validateEmail(email);
         expect(errors.length).toEqual(0);
     });
 
     it('Test incorrect email format', async() => {
         dbHandler.hasUserByEmail.mockReturnValue(false);
         let email = "this is wrong email format";
-        let errors = await userManager.validateEmail(null, null, email);
+        let errors = await userManager.validateEmail(email);
         expect(errors.length).toEqual(1);
         expect(errors[0]).toEqual(userManager.INVALID_EMAIL_ERROR);
     });
@@ -107,7 +107,7 @@ describe("Validate email", () => {
     it('test duplicate email format', async() => {
         dbHandler.hasUserByEmail.mockReturnValue(true);
         let email = "moamenelbaroudy.me@gmail.com";
-        let errors = await userManager.validateEmail(null, null, email);
+        let errors = await userManager.validateEmail(email);
         expect(errors.length).toEqual(1);
         expect(errors[0]).toEqual(userManager.DUPLICATE_EMAIL_ERROR);
     })
@@ -119,7 +119,7 @@ describe("Validate new password", () => {
     it("Validate correct old password", async() => {
         let newInfo = {
             oldPassword: "ThisisoldPassword",
-            newPassword: "ThisisnewPassword",
+            password: "ThisisnewPassword",
             confirmPassword: "ThisisnewPassword",
             fullName: "test",
             birthdate: "1996-01-06"
@@ -132,13 +132,14 @@ describe("Validate new password", () => {
             }
         };
         let errors = await userManager.validateNewInfo(session, newInfo);
+        console.log(errors)
         expect(errors.length).toEqual(0);
     });
 
     it("Validate incorrect old password", async() => {
         let newInfo = {
             oldPassword: "ThisisoldPassword",
-            newPassword: "ThisisnewPassword",
+            password: "ThisisnewPassword",
             confirmPassword: "ThisisnewPassword",
             fullName: "test",
             birthdate: "1996-01-06"
@@ -151,6 +152,7 @@ describe("Validate new password", () => {
             }
         };
         let errors = await userManager.validateNewInfo(session, newInfo);
+        
         expect(errors.length).toEqual(1);
         expect(errors[0]).toEqual(userManager.WRONG_PASSWORD);
     });
@@ -158,7 +160,7 @@ describe("Validate new password", () => {
     it("Validate mismatch newpassword and confirm password", async() => {
         let newInfo = {
             oldPassword: "ThisisoldPassword",
-            newPassword: "ThisisnewPassword",
+            password: "ThisisnewPassword",
             confirmPassword: "ThisisnotnewPassword",
             fullName: "test",
             birthdate: "1996-01-06"
@@ -178,7 +180,7 @@ describe("Validate new password", () => {
     it("Validate short new password", async() => {
         let newInfo = {
             oldPassword: "ThisisoldPassword",
-            newPassword: "short",
+            password: "short",
             confirmPassword: "short",
             fullName: "test",
             birthdate: "1996-01-06"
