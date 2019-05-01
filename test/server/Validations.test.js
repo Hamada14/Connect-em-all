@@ -1,5 +1,4 @@
 const userManager = require('server/UserManager');
-const db = require('server/database_handler');
 const bcrypt = require('bcryptjs');
 
 describe("Validate password", () => {

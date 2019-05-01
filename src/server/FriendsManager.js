@@ -1,8 +1,5 @@
 const db = require("./database_handler");
 
-const DATABASE_NAME = "social_media_db";
-
-const NO_USER_BY_EMAIL_ERR = "Sorry, no user by this email";
 const ARE_NOT_FRIENDS = "The aren't friends"
 const ALREADY_FRIENDS_ERR = "You are friends";
 const FRIEND_REQUEST_ALREADY_SENT = "Friend request already sent";
@@ -52,6 +49,7 @@ async function acceptFriendRequest(userId, friendId) {
   }
   await db.removeFriendRequest(userId, friendId);
   await db.addFriend(userId, friendId);
+  return []
 }
 
 async function deleteFriend(userId, friendId) {
@@ -81,5 +79,11 @@ module.exports = {
   getFriends,
   hasFriendRequest,
   deleteFriend,
-  getFriendRequests
+  getFriendRequests,
+  ARE_NOT_FRIENDS,
+  ALREADY_FRIENDS_ERR,
+  FRIEND_REQUEST_ALREADY_SENT,
+  FRIEND_SENT_YOU_REQUEST,
+  NO_FRIEND_REQUEST_REMOVE,
+  NO_FRIEND_REQUEST_SENT
 }

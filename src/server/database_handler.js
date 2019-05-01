@@ -21,7 +21,6 @@ connection.connect(function(err) {
 function creatUser(userParams) {
   let sqlAdd = "INSERT into USER (FULL_NAME, SALT, HASHED_PASSWORD, EMAIL, BIRTH_DATE) values (\'{0}\', \'{1}\', \'{2}\', \'{3}\', \'{4}\');";
   sqlAdd = utils.substituteParams(sqlAdd, [userParams.fullName, userParams.salt, userParams.hashedPassword, userParams.email, userParams.birthdate])
-  console.log(sqlAdd);
   connection.query(sqlAdd, function (err, result) {
     if (err) {
       throw err;
@@ -34,7 +33,6 @@ function creatUser(userParams) {
 function getUserDetailsByEmail(email) {
   let sqlSelect = "SELECT * FROM USER WHERE email = '{0}';";
   sqlSelect = utils.substituteParams(sqlSelect, [email]);
-  console.log(sqlSelect);
   return new Promise((resolve, reject) => {
     connection.query(sqlSelect, function (err, result) {
       if(err) {
@@ -62,7 +60,6 @@ function getUserPersonalInfoById(userId) {
 function hasUserByEmail(email) {
   let sqlSelect = "SELECT * FROM USER WHERE email = \'{0}\';";
   sqlSelect = utils.substituteParams(sqlSelect, [email]);
-  console.log(sqlSelect);
   return new Promise((resolve, reject) => {
     connection.query(sqlSelect, function (err, result) {
       if(err) {
@@ -81,7 +78,6 @@ function hasUserByEmail(email) {
 function updateUserInfo(email, userInfo){
   let sqlAdd = "UPDATE USER SET FULL_NAME='{0}', HASHED_PASSWORD='{1}', BIRTH_DATE='{2}' WHERE EMAIL='{3}';";
   sqlAdd = utils.substituteParams(sqlAdd, [userInfo.fullName, userInfo.hashedPassword, userInfo.birthdate, email]);
-  console.log(sqlAdd);
   connection.query(sqlAdd, function (err, result) {
     if (err) {
       throw err;
