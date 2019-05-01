@@ -62,7 +62,7 @@ export default class TimelineTab extends Component {
     this.setState({ posts: posts, newPostContent: '' })
   }
 
-  changeNewPostContent() {
+  changeNewPostContent(event) {
     this.setState({ newPostContent: event.target.value });
   }
 

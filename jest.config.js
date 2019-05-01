@@ -35,5 +35,9 @@ module.exports = {
     // Indicates whether each individual test should be reported during the run
     verbose: false,
 
-    moduleDirectories: ["src", "node_modules"]
+    moduleDirectories: ["src", "node_modules"],
+
+    moduleNameMapper: {
+      "\\.(css|jpg|png)$": "<rootDir>/test/empty-module.js"
+    }
   };

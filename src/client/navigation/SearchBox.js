@@ -30,7 +30,6 @@ export default class SearchBox extends Component {
           this.setState( {userId: undefined} )
         }
       })
-      .then(_ => console.log(this.state.userId))
   }
 
   render() {
@@ -45,8 +44,8 @@ export default class SearchBox extends Component {
       <React.Fragment>
         <Form inline>
           <FormControl value={this.state.searchEmail}
-                      type="text" 
-                      placeholder="Search" 
+                      type="text"
+                      placeholder="Search"
                       className="mr-sm-2"
                       onChange={this.handleSearchEmailChange} />
           {searchButton}

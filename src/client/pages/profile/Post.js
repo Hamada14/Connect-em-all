@@ -28,7 +28,9 @@ export default class Post extends Component {
           <span className="tweetEntry-username">
             &nbsp; &nbsp; - &nbsp; <b>{this.props.email}</b>
           </span>
-          <span className="tweetEntry-timestamp"> - { moment(this.props.date).format('YYYY MMM Mo - HH:mm:ss')} </span>
+          <span className="tweetEntry-timestamp">
+            - <div className="tweetEntry-timestamp"> { moment(this.props.date).format('YYYY MMM Do - HH:mm:ss')} </div>
+          </span>
           <div className="tweetEntry-text-container">
             {this.props.content}
           </div>
