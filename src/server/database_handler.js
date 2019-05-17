@@ -4,8 +4,8 @@ const utils = require('./utils');
 
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'admin',
+  user: 'moamen',
+  password: 'mysqlserver',
   database: 'social_media_db'
 });
 

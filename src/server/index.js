@@ -211,6 +211,11 @@ app.get('/api/get_posts_by_user', async (req, res) => {
 
 app.get('/api/get_news_feed', async (req, res) => {
   let userId = req.query.userId;
+  if(!req.session.user || !req.cookies.user_sid || userId != req.session.user.userId) {
+    res.status(OK_STATUS_CODE);
+    res.send({ errors: ['User is not loggedIn'] })
+    res.end();
+  }
   const postManager = new PostManager();
   const posts = await postManager.getNewsFeedForUser(userId);
   res.status(OK_STATUS_CODE);
@@ -221,6 +226,11 @@ app.get('/api/get_news_feed', async (req, res) => {
 app.get('/api/toggle_like_post', async (req, res) => {
   let postId = req.query.postId;
   let userId = req.query.userId;
+  if(!req.session.user || !req.cookies.user_sid || userId != req.session.user.userId) {
+    res.status(OK_STATUS_CODE);
+    res.send({ errors: ['User is not loggedIn'] })
+    res.end();
+  }
   const postManager = new PostManager();
   const data = await postManager.toggleLike(postId, userId);
   res.status(OK_STATUS_CODE);
@@ -275,6 +285,11 @@ app.get('/api/get_post_comments', async (req, res) => {
 // req contains commenterId, postId, content
 app.post('/api/add_comment', async (req, res) => {
   let commenterId = req.body.userId;
+  if(!req.session.user || !req.cookies.user_sid || commenterId != req.session.user.userId) {
+    res.status(OK_STATUS_CODE);
+    res.send({ errors: ['User is not loggedIn'] })
+    res.end();
+  }
   let content = req.body.commentContent;
   let postId = req.body.postId;
   const postManager = new PostManager();
