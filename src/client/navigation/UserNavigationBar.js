@@ -27,9 +27,9 @@ export default class UserNavigationBar extends Component {
     return (
       <React.Fragment>
         <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="#">Connect ‘em</Navbar.Brand>
+          <Navbar.Brand href="#/">Connect ‘em</Navbar.Brand>
           <Nav className="mr-auto">
-            <Nav.Link href="#">Home</Nav.Link>
+            <Nav.Link href="#/">Home</Nav.Link>
           </Nav>
 
           <Nav>

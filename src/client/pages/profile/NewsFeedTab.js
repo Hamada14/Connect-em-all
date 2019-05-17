@@ -46,7 +46,7 @@ export default class NewsFeedTab extends Component {
       }).then(res => res.json())
       .then(posts_data => {
         let posts = posts_data.posts;
-        return posts.map((post) => { return { profileId: this.props.profileId, writer: post.FULL_NAME, content: post.CONTENT, date: post.CREATED_AT, email: post.EMAIL, likesCount: post.LIKES_COUNT, likes: post.LIKES, postId: post.POST_ID, userId: post.USER_ID }} );
+        return posts.map((post) => { return { profileId: this.props.profileId, writer: post.FULL_NAME, content: post.CONTENT, date: post.CREATED_AT, email: post.EMAIL, likesCount: post.LIKES_COUNT, likes: post.LIKES, likers: post.LIKERS, postId: post.POST_ID, userId: post.USER_ID }} );
       });
   }
 
@@ -94,7 +94,7 @@ export default class NewsFeedTab extends Component {
         {this.state.posts.map((post, idx) => (
           <div className="station" key={idx}>
             <Post postId={post.postId} writer={post.writer} clientId={this.props.clientId}
-			content={post.content} date={post.date} email={post.email} likes={post.likes}/>
+			content={post.content} date={post.date} email={post.email} likes={post.likes} likers={post.likers}/>
 			</div>
         ))}
       </>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './app.css';
 import { HashRouter, Route, Redirect } from 'react-router-dom';
-import { Button, Card, Container, Row, Col, Nav } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
