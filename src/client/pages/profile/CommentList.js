@@ -35,6 +35,9 @@ export default class CommentList extends React.Component {
 			}).then(res => res.json())
      		 .then(comments_data => {
 				let comments = comments_data.comments;
+                 if (!comments) {
+                     comments = [];
+                 }
 				return comments.map((comment) => {
 					   	return {
 								body: comment.CONTENT,
