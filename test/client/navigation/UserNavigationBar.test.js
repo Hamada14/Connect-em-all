@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 
 import UserNavigationBar from "client/navigation/UserNavigationBar";
 
-const HOME_LINK = '#';
+const HOME_LINK = '#/';
 
 const expectedFullName = "jane doe"
 describe('User Navigation bar', () => {
