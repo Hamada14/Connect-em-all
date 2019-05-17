@@ -12,7 +12,6 @@ import FriendRequestsTab from './profile/FriendRequestsTab'
 const enumValue = (name) => Object.freeze({ toString: () => name });
 
 const TABS = Object.freeze({
-  NEWS_FEED: enumValue("Tabs.NEWS_FEED"),
   TIME_LINE: enumValue("Tabs.TIME_LINE"),
   FRIENDS: enumValue("Tabs.FRIENDS"),
   FRIEND_REQUESTS: enumValue("Tabs.FRIEND_REQUESTS")
@@ -44,7 +43,6 @@ export default class ProfilePage extends Component {
       receivedFriendRequest: false
     };
 
-    this.switchToNewsFeed = this.switchToNewsFeed.bind(this);
     this.switchToTimeline = this.switchToTimeline.bind(this);
     this.switchToFriends = this.switchToFriends.bind(this);
     this.switchToFriendRequests = this.switchToFriendRequests.bind(this);
@@ -105,10 +103,6 @@ export default class ProfilePage extends Component {
           profileFullName: fullName, profileBirthdate: birthdate, profileEmail: email,
           sentFriendRequest: sentFriendRequest, receivedFriendRequest: receivedFriendRequest });
       })
-  }
-
-  switchToNewsFeed() {
-    this.setState({ currentTab: TABS.NEWS_FEED });
   }
 
   switchToTimeline() {
@@ -198,22 +192,8 @@ export default class ProfilePage extends Component {
         </Nav.Item>
       );
     }
-    let newsFeedNavItem = '';
-    if(this.props.profileId == this.props.clientId) {
-      newsFeedNavItem = (
-        <Nav.Item>
-          <Nav.Link
-            onClick={this.switchToNewsFeed}
-            active={this.state.currentTab == TABS.NEWS_FEED}
-          >
-            NewsFeed
-          </Nav.Link>
-        </Nav.Item>
-      );
-    }
     return (
       <Nav justify variant="tabs" defaultActiveKey="/home">
-        {newsFeedNavItem}
         <Nav.Item>
           <Nav.Link
             onClick={this.switchToTimeline}

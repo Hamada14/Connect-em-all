@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './app.css';
 import { HashRouter, Route, Redirect } from 'react-router-dom';
+import { Button, Card, Container, Row, Col, Nav } from 'react-bootstrap';
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -9,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 
 import GenericNavigationBar from "./navigation/GenericNavigationBar";
 import UserNavigationBar from "./navigation/UserNavigationBar";
+import NewsFeedTab from './pages/profile/NewsFeedTab'
 
 import { loadingBlock } from "./Util";
 
@@ -96,7 +98,15 @@ export default class App extends Component {
     if(!loggedIn) {
       return this.redirectToLogin();
     }
-    return (<p>Welcome Home {fullName}!</p>)
+    return (
+      <div className="newsFeed">
+        <Card>
+          <Card.Body>
+            <NewsFeedTab profileId={this.state.userId} clientId={this.state.userId} fullName={fullName} />
+          </Card.Body>
+        </Card>
+      </div>
+    )
   }
 
   loginPage() {
