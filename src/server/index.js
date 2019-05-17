@@ -224,7 +224,7 @@ app.get('/api/toggle_like_post', async (req, res) => {
   const postManager = new PostManager();
   const data = await postManager.toggleLike(postId, userId);
   res.status(OK_STATUS_CODE);
-  res.send({ likes: data.LIKES})
+  res.send({ likes: data.LIKES, likers: data.LIKERS })
   res.end();
 
 })

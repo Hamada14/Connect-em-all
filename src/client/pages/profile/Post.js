@@ -12,14 +12,11 @@ import moment from 'moment'
 export default class Post extends Component {
 
   state = {
-    isLoading: true
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      isLoading: true,
-	};
+    this.state = {};
   }
 
 
@@ -39,14 +36,13 @@ export default class Post extends Component {
             {this.props.content}
           </div>
         </div>
-          <LikeToggleButton likes={this.props.likes} postId={this.props.postId} clientId={this.props.clientId}/>
-
-		<div className="comment-section">
+        <LikeToggleButton likes={this.props.likes} postId={this.props.postId} clientId={this.props.clientId} likers={this.props.likers}/>
+        <div className="comment-section">
           <h5>Comments</h5>
-			<CommentList postId={this.props.postId} clientId={this.props.clientId}/>
-		</div>
-	  </div>
-        )
+          <CommentList postId={this.props.postId} clientId={this.props.clientId} />
+        </div>
+      </div>
+    )
   }
 
 
