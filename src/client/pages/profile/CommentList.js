@@ -63,6 +63,10 @@ export default class CommentList extends React.Component {
   }
 
   renderCommentBox() {
+    let button = <Button type="submit" onClick={this.submitComment}>Add Comment</Button>;
+    if(this.state.commentContent == undefined || this.state.commentContent.length == 0) {
+      button = <Button type="submit" onClick={this.submitComment} disabled>Add Comment</Button>
+    }
     return (
       <>
         <Form>
@@ -75,7 +79,7 @@ export default class CommentList extends React.Component {
               onChange={this.changeCommentContent}
             />
           </Form.Group>
-          <Button type="submit" onClick={this.submitComment}>Add Comment</Button>
+          {button}
         </Form>
       </>
     )
