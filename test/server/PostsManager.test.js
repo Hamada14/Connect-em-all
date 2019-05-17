@@ -75,3 +75,64 @@ describe('Get newsfeed for a user tests', () => {
   })
 
 })
+
+
+describe('Add comment tests', () => {
+  
+  const databaseHandler = require('server/database_handler')
+
+  beforeAll(() => {
+    databaseHandler.addComment = jest.fn()
+    databaseHandler.addComment.mockReturnValue([])
+  })
+
+  it('adds comment correctly', async() => {
+    let postManager = new PostManager()
+    await postManager.addComment(1, 'comment', 2)
+    expect(databaseHandler.addComment).toBeCalled()
+  })
+
+})
+
+describe('Get comments for a post tests', () => {
+  
+  const databaseHandler = require('server/database_handler')
+
+  beforeAll(() => {
+    databaseHandler.getPostComments = jest.fn()
+  })
+
+  it('Gets an empty list of comments', async() => {
+    databaseHandler.getPostComments.mockReturnValue([])
+    const postManager = new PostManager()
+    let comments = await postManager.getPostComments(1);
+    expect(comments).toEqual([])
+    expect(databaseHandler.getPostComments).toBeCalled()
+  })
+
+  it('Gets a non-empty list of comments', async() => {
+    let mockComment1 = {CREATED_AT: 0, CONTENT: 'content1', FULL_NAME: "a"}
+    databaseHandler.getPostComments.mockReturnValue([mockComment1])
+    let postManager = new PostManager()
+    let comments = await postManager.getPostComments(1)
+    expect(comments).toEqual([mockComment1])
+    expect(databaseHandler.getPostComments).toBeCalled()
+  })
+ 
+  it('Gets comments sorted newest first', async() => {
+    let mockComment1 = {CREATED_AT: 0, CONTENT: 'content1', FULL_NAME: "a"}
+    let mockComment2 = {CREATED_AT: 1, CONTENT: 'content2', FULL_NAME: "b"}
+    let mockComment3 = {CREATED_AT: 2, CONTENT: 'content3', FULL_NAME: "c"}
+    let sortedComments = [mockComment1, mockComment2, mockComment3]
+    databaseHandler.getPostComments.mockReturnValue(sortedComments)
+    let postManager = new PostManager()
+    let comments = await postManager.getPostComments(1)
+    comments.sort((a, b) => a.CREATED_AT - b.CREATED_AT)
+    expect(comments).toEqual(sortedComments)
+    expect(databaseHandler.getPostComments).toBeCalled()
+  })
+
+
+ 
+
+})
