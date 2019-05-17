@@ -36,10 +36,10 @@ describe('User Navigation bar internal Navs', () => {
     wrapper = mount(<UserNavigationBar fullName={expectedFullName} />);
   });
 
-  it('Contains a home Nav', () => {
-    const registerNav = wrapper.find(Nav.Link).get(0);
-    expect(registerNav.props.href).toEqual(HOME_LINK);
-  });
+  // it('Contains a home Nav', () => {
+  //   const registerNav = wrapper.find(Nav.Link).get(0);
+  //   expect(registerNav.props.href).toEqual(HOME_LINK);
+  // });
 
   it('Contains the user name', () => {
     const nameContainer = wrapper.find(Navbar.Text).first();

@@ -36,8 +36,10 @@ class PostManager {
     return await this.convertLikers(await db.getPostsByUser(userId));
   }
 
-  addComment(postId, content, commenterId){
-    return db.addComment(postId, content, commenterId);
+  addComment(postId, content, commenterId) {
+    if(content || content.length != 0) {
+        return db.addComment(postId, content, commenterId);
+    }
   }
 
   getPostComments(postId){

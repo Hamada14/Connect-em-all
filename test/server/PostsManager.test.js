@@ -78,7 +78,7 @@ describe('Get newsfeed for a user tests', () => {
 
 
 describe('Add comment tests', () => {
-  
+
   const databaseHandler = require('server/database_handler')
 
   beforeAll(() => {
@@ -92,10 +92,17 @@ describe('Add comment tests', () => {
     expect(databaseHandler.addComment).toBeCalled()
   })
 
+  it('add empty comment', async() => {
+    let postManager = new PostManager()
+    databaseHandler.addComment.mockReturnValue([])
+    await postManager.addComment(1, '', 2)
+    expect(databaseHandler.addComment).not.toBeCalled()
+  })
+
 })
 
 describe('Get comments for a post tests', () => {
-  
+
   const databaseHandler = require('server/database_handler')
 
   beforeAll(() => {
@@ -118,7 +125,7 @@ describe('Get comments for a post tests', () => {
     expect(comments).toEqual([mockComment1])
     expect(databaseHandler.getPostComments).toBeCalled()
   })
- 
+
   it('Gets comments sorted newest first', async() => {
     let mockComment1 = {CREATED_AT: 0, CONTENT: 'content1', FULL_NAME: "a"}
     let mockComment2 = {CREATED_AT: 1, CONTENT: 'content2', FULL_NAME: "b"}
@@ -133,6 +140,6 @@ describe('Get comments for a post tests', () => {
   })
 
 
- 
+
 
 })
