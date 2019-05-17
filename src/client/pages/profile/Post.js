@@ -32,8 +32,7 @@ export default class Post extends Component {
           </strong>
           <span className="tweetEntry-username">
             &nbsp; &nbsp; - &nbsp; <b>{this.props.email}</b>
-          </span>
-          <span className="tweetEntry-timestamp">
+          </span> <span className="tweetEntry-timestamp">
             - <div className="tweetEntry-timestamp"> { moment(this.props.date).format('YYYY MMM Do - HH:mm:ss')} </div>
           </span>
           <div className="tweetEntry-text-container">
@@ -58,5 +57,5 @@ Post.propTypes = {
   content: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  postId: PropTypes.string.isRequired
+  postId: PropTypes.int.isRequired
 };
