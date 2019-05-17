@@ -242,5 +242,28 @@ app.post('/api/search_user_by_email', async (req, res) => {
   res.end();
 })
 
+app.get('/api/get_post_comments', async (req, res) => {
+  let postId = req.query.postId;
+  const postManager = new PostManager();
+  const comments = await postManager.getPostComments(postId);
+  res.status(OK_STATUS_CODE);
+  res.send({ comments: comments })
+  console.log(comments)
+  res.end();
+})
+
+
+// req contains commenterId, postId, content
+app.post('/api/add_comment', async (req, res) => {
+  let commenterId = req.body.userId;
+  let content = req.body.commentContent;
+  let postId = req.body.postId;
+  const postManager = new PostManager();
+  postManager.addComment(postId, content, commenterId);
+  res.status(OK_STATUS_CODE);
+  res.end();
+})
+
+
 // eslint-disable-next-line no-console
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on the port ${process.env.PORT || 8080}!`));

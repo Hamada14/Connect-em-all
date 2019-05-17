@@ -13,6 +13,15 @@ class PostManager {
   getPostsByUser(userId) {
     return db.getPostsByUser(userId);
   }
+
+  addComment(postId, content, commenterId){
+	return db.addComment(postId, content, commenterId);
+  }
+
+  getPostComments(postId){
+	return db.getPostComments(postId);
+  }
+
 }
 
 

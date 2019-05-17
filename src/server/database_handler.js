@@ -4,8 +4,8 @@ const utils = require('./utils');
 
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'moamen',
-  password: 'mysqlserver',
+  user: 'root',
+  password: 'root',
   database: 'social_media_db'
 });
 
@@ -217,7 +217,7 @@ function createPost(writer, content) {
 }
 
 function getPostsByUser(userId) {
-  let sqlQuery = "select POST.CONTENT, USER.FULL_NAME as FULL_NAME, USER.EMAIL as EMAIL, POST.CREATED_AT as CREATED_AT from POST," +
+  let sqlQuery = "select POST.POST_ID, POST.CONTENT, USER.FULL_NAME as FULL_NAME, USER.EMAIL as EMAIL, POST.CREATED_AT as CREATED_AT from POST," +
     "USER where POST.USER_ID = USER.USER_ID AND USER.USER_ID = {0} ORDER BY CREATED_AT DESC;"
   sqlQuery = utils.substituteParams(sqlQuery, [userId]);
   return new Promise((resolve) => {
@@ -245,6 +245,36 @@ function getUserFriendRequests(userId) {
   });
 }
 
+function getPostComments(postId) {
+  let sqlQuery = "select COMMENT.CONTENT, USER.FULL_NAME as FULL_NAME, COMMENT.CREATED_AT as CREATED_AT from COMMENT," +
+    "USER where COMMENT.USER_ID = USER.USER_ID AND COMMENT.POST_ID = {0} ORDER BY CREATED_AT DESC;"
+  sqlQuery = utils.substituteParams(sqlQuery, [postId]);
+  return new Promise((resolve) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        throw err;
+      }
+      resolve(result);
+    });
+  });
+}
+
+function addComment(postID, content, commenterID) {
+  let sqlQuery =
+	"INSERT INTO COMMENT(POST_ID, CONTENT, USER_ID) VALUES ({0}, \"{1}\", {2})";
+  sqlQuery = utils.substituteParams(sqlQuery, [postID, content, commenterID]);
+  return new Promise((resolve) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log("error in databse, in add comment");
+        console.log(err)
+        throw err;
+      }
+      resolve(result);
+    });
+  });
+}
+
 exports.creatUser = creatUser;
 exports.getUserDetailsByEmail = getUserDetailsByEmail;
 exports.hasUserByEmail = hasUserByEmail;
@@ -261,3 +291,5 @@ exports.getPostsByUser = getPostsByUser;
 exports.getUserPersonalInfoById = getUserPersonalInfoById;
 exports.deleteFriend = deleteFriend;
 exports.getUserFriendRequests = getUserFriendRequests;
+exports.addComment = addComment;
+exports.getPostComments = getPostComments;
