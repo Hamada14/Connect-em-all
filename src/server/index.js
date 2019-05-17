@@ -268,7 +268,6 @@ app.get('/api/get_post_comments', async (req, res) => {
   const comments = await postManager.getPostComments(postId);
   res.status(OK_STATUS_CODE);
   res.send({ comments: comments })
-  console.log(comments)
   res.end();
 })
 

@@ -26,10 +26,16 @@ export default class ProfilePage extends Component {
 
   constructor(props) {
     super(props);
+
+    let defaultTab = TABS.TIME_LINE;
+    if(this.props.profileId == this.props.clientId) {
+        defaultTab = TABS.NEWS_FEED;
+    }
+
     this.state = {
       isLoading: true,
       errors: [],
-      currentTab: TABS.NEWS_FEED,
+      currentTab: defaultTab,
       areFriends: false,
       profileFullName: '',
       profileEmail: '',
@@ -192,8 +198,9 @@ export default class ProfilePage extends Component {
         </Nav.Item>
       );
     }
-    return (
-      <Nav justify variant="tabs" defaultActiveKey="/home">
+    let newsFeedNavItem = '';
+    if(this.props.profileId == this.props.clientId) {
+      newsFeedNavItem = (
         <Nav.Item>
           <Nav.Link
             onClick={this.switchToNewsFeed}
@@ -202,6 +209,11 @@ export default class ProfilePage extends Component {
             NewsFeed
           </Nav.Link>
         </Nav.Item>
+      );
+    }
+    return (
+      <Nav justify variant="tabs" defaultActiveKey="/home">
+        {newsFeedNavItem}
         <Nav.Item>
           <Nav.Link
             onClick={this.switchToTimeline}
