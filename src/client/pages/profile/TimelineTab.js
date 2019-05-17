@@ -6,7 +6,6 @@ import { errorsBlock, loadingBlock } from '../../Util';
 
 import Post from './Post'
 
-
 export default class TimelineTab extends Component {
 
   state = {
@@ -47,7 +46,8 @@ export default class TimelineTab extends Component {
       }).then(res => res.json())
       .then(posts_data => {
         let posts = posts_data.posts;
-        return posts.map((post) => { return { writer: post.FULL_NAME, content: post.CONTENT, date: post.CREATED_AT, email: post.EMAIL }} );
+        return posts.map((post) => {
+			return { postId: post.POST_ID, writer: post.FULL_NAME, content: post.CONTENT, date: post.CREATED_AT, email: post.EMAIL }} );
       });
   }
 
@@ -94,8 +94,9 @@ export default class TimelineTab extends Component {
       <>
         {this.state.posts.map((post, idx) => (
           <div className="station" key={idx}>
-            <Post writer={post.writer} content={post.content} date={post.date} email={post.email} />
-          </div>
+            <Post postId={post.postId} writer={post.writer} clientId={this.props.clientId}
+			content={post.content} date={post.date} email={post.email} />
+			</div>
         ))}
       </>
     )
