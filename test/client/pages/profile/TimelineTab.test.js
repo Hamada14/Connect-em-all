@@ -20,8 +20,8 @@ const email2 = 'email2';
 const date2 = '2019-04-22 16:48:17'
 
 const posts = [
-  {FULL_NAME:name1, CONTENT:content1, EMAIL:email1, CREATED_AT:date1},
-  {FULL_NAME:name2, CONTENT:content2, EMAIL:email2, CREATED_AT:date2}
+  {POST_ID: 1, FULL_NAME:name1, CONTENT:content1, EMAIL:email1, CREATED_AT:date1},
+  {POST_ID: 2, FULL_NAME:name2, CONTENT:content2, EMAIL:email2, CREATED_AT:date2}
 ];
 
 describe('Timeline UI Component', () => {
@@ -49,7 +49,7 @@ describe('Timeline UI Component', () => {
   });
 
   it('Calls fetch once to contact the API', () => {
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
   it('Sends a request to /api/get_posts_by_user?userId=' + profileId, () => {
@@ -111,20 +111,20 @@ describe('Timeline UI Component', () => {
       fetchCalls = global.fetch.mock.calls;
     });
 
-    it('Sends three calls to the API', () => {
-      expect(fetchCalls).toHaveLength(3);
+    it('Sends five calls to the API', () => {
+      expect(fetchCalls).toHaveLength(5);
     });
 
     it('Sends a request to /api/create_post', () => {
-      expect(fetchCalls[1][0]).toEqual('/api/create_post');
+      expect(fetchCalls[3][0]).toEqual('/api/create_post');
     });
 
     it('Sends a POST request to the API for creating the post', () => {
-      expect(fetchCalls[1][1].method).toEqual('POST');
+      expect(fetchCalls[3][1].method).toEqual('POST');
     });
 
     it('Sends the profile id and content to the API as params', () => {
-      expect(fetchCalls[1][1].body).toEqual(JSON.stringify({ userId: clientId , postContent: postContent }));
+      expect(fetchCalls[3][1].body).toEqual(JSON.stringify({ userId: clientId , postContent: postContent }));
     });
   });
 });
