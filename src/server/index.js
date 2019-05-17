@@ -209,6 +209,26 @@ app.get('/api/get_posts_by_user', async (req, res) => {
   res.end();
 })
 
+app.get('/api/get_news_feed', async (req, res) => {
+  let userId = req.query.userId;
+  const postManager = new PostManager();
+  const posts = await postManager.getNewsFeedForUser(userId);
+  res.status(OK_STATUS_CODE);
+  res.send({ posts: posts })
+  res.end();
+})
+
+app.get('/api/toggle_like_post', async (req, res) => {
+  let postId = req.query.postId;
+  let userId = req.query.userId;
+  const postManager = new PostManager();
+  const data = await postManager.toggleLike(postId, userId);
+  res.status(OK_STATUS_CODE);
+  res.send({ likes: data.LIKES})
+  res.end();
+
+})
+
 app.post('/api/get_user_personal_info', async (req, res) => {
   let userId = req.body.userId;
   const userManager = new UserManager();

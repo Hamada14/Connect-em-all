@@ -33,7 +33,6 @@ body {
 /************************/
 
 .tweetEntry {
-  border-bottom: 1px solid #e1e8ed;
   cursor: pointer;
   min-height: 51px;
   padding: 9px 12px;
@@ -89,4 +88,52 @@ body {
   max-width: 506px;
   max-height: 506px;
 
+}
+
+.station {
+    border: 1px;
+    border-color: #dcdcdc;
+    border-style: solid;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.comment-section {
+    border: 1px;
+    padding: 9px;
+    display: block;
+    border-color: #c5b6b6;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.comment {
+  border-bottom: 1px #cecece solid;
+  background: #efefef;
+  padding: 5px;
+
+}
+
+.comment-body {
+}
+.comment-author {
+  float: right;
+  font-size: 75%;
+}
+
+.comment-date {
+  font-size: 75%;
+}
+
+.like-bar {
+  height: 50px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+.like-btn {
+  float: left;
+}
+.like-counter {
+  float: right;
 }

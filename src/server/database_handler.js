@@ -4,8 +4,8 @@ const utils = require('./utils');
 
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'root',
+  user: 'moamen',
+  password: 'mysqlserver',
   database: 'social_media_db'
 });
 
@@ -170,6 +170,51 @@ function deleteFriend(id1, id2) {
   })
 }
 
+function isPostLikedByUser(post_id, user_id) {
+    let sqlQuery = "SELECT COUNT(*) as COUNTER FROM POST_LIKE WHERE POST_LIKE.user_id = {0} AND POST_LIKE.post_id = {1}"
+
+    sqlQuery = utils.substituteParams(sqlQuery, [user_id, post_id]);
+
+  return new Promise((resolve, reject) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log("error in databse, in get friends by id");
+        throw err;
+      }
+      resolve(result[0].COUNTER == 1);
+    })
+  })
+}
+
+function unlikePost(post_id, user_id) {
+  let sqlQuery = "DELETE FROM POST_LIKE WHERE post_id = {0} AND user_id = {1}";
+    sqlQuery = utils.substituteParams(sqlQuery, [post_id, user_id]);
+
+  return new Promise((resolve, reject) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log("error in databse, in get friends by id");
+        throw err;
+      }
+      resolve(result);
+    })
+  })
+}
+
+function likePost(post_id, user_id) {
+  let sqlQuery = "INSERT INTO POST_LIKE(POST_ID, USER_ID) VALUES (\"{0}\", {1})";
+    sqlQuery = utils.substituteParams(sqlQuery, [post_id, user_id]);
+
+  return new Promise((resolve, reject) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        console.log("error in databse, in get friends by id");
+        throw err;
+      }
+      resolve(result);
+    })
+  })
+}
 
 function getFriendsById(id) {
   let sqlQuery = "SELECT FRIEND.FRIEND_ID as USER_ID, USER.FULL_NAME AS FULL_NAME," +
@@ -216,9 +261,60 @@ function createPost(writer, content) {
   });
 }
 
+function getPostLikes(postId) {
+
+  let sqlQuery = "SELECT GROUP_CONCAT(POST_LIKE.user_id) as LIKES " +
+"from POST " +
+"LEFT JOIN POST_LIKE on POST.post_id = POST_LIKE.post_id " +
+"WHERE POST.post_id = {0} " +
+"GROUP BY POST.POST_ID "
+
+
+sqlQuery = utils.substituteParams(sqlQuery, [postId]);
+
+  return new Promise((resolve) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        throw err;
+      }
+      resolve(result[0]);
+    });
+  });
+}
+
+function getNewsFeedForUser(userId) {
+
+  let sqlQuery = "SELECT POST.POST_ID, USER.USER_ID, POST.CONTENT, USER.FULL_NAME as FULL_NAME, USER.EMAIL as EMAIL, " +
+"POST.CREATED_AT as CREATED_AT, GROUP_CONCAT(POST_LIKE.user_id) as LIKES " +
+"from FRIEND " +
+"JOIN POST on POST.user_id = FRIEND.friend_id " +
+"JOIN USER on POST.user_id = USER.user_id " +
+"LEFT JOIN POST_LIKE on POST.post_id = POST_LIKE.post_id " +
+"WHERE FRIEND.USER_ID = {0} or FRIEND.FRIEND_ID = {1} " +
+"GROUP BY POST.POST_ID " +
+"ORDER BY CREATED_AT DESC"
+
+sqlQuery = utils.substituteParams(sqlQuery, [userId, userId]);
+  return new Promise((resolve) => {
+    connection.query(sqlQuery, (err, result) => {
+      if(err) {
+        throw err;
+      }
+      resolve(result);
+    });
+  });
+}
+
 function getPostsByUser(userId) {
-  let sqlQuery = "select POST.POST_ID, POST.CONTENT, USER.FULL_NAME as FULL_NAME, USER.EMAIL as EMAIL, POST.CREATED_AT as CREATED_AT from POST," +
-    "USER where POST.USER_ID = USER.USER_ID AND USER.USER_ID = {0} ORDER BY CREATED_AT DESC;"
+  let sqlQuery = "SELECT POST.POST_ID, USER.USER_ID, POST.CONTENT, USER.FULL_NAME as FULL_NAME, USER.EMAIL as EMAIL, " +
+"POST.CREATED_AT as CREATED_AT, GROUP_CONCAT(POST_LIKE.user_id) as LIKES " +
+"from USER " +
+"JOIN POST on POST.user_id = USER.user_id " +
+"LEFT JOIN POST_LIKE on POST.post_id = POST_LIKE.post_id " +
+"WHERE USER.user_id = {0} " +
+"GROUP BY POST.POST_ID " +
+"ORDER BY CREATED_AT DESC"
+
   sqlQuery = utils.substituteParams(sqlQuery, [userId]);
   return new Promise((resolve) => {
     connection.query(sqlQuery, (err, result) => {
@@ -288,6 +384,11 @@ exports.getFriendsById = getFriendsById;
 exports.getUserById = getUserById;
 exports.createPost = createPost;
 exports.getPostsByUser = getPostsByUser;
+exports.getNewsFeedForUser = getNewsFeedForUser;
+exports.likePost = likePost;
+exports.unlikePost = unlikePost;
+exports.getPostLikes = getPostLikes;
+exports.isPostLikedByUser = isPostLikedByUser;
 exports.getUserPersonalInfoById = getUserPersonalInfoById;
 exports.deleteFriend = deleteFriend;
 exports.getUserFriendRequests = getUserFriendRequests;

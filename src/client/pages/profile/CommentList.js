@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Comment from './Comment'
 
 import { Form, Button } from 'react-bootstrap';
-import  loadingBlock from '../../Util';  
+import  loadingBlock from '../../Util';
 
 
 export default class CommentList extends React.Component {
@@ -14,7 +14,7 @@ export default class CommentList extends React.Component {
 			isLoading: true
 		}
 		commentContent:' '
-		this.changeCommentContent = this.changeCommentContent.bind(this)	
+		this.changeCommentContent = this.changeCommentContent.bind(this)
 		this.submitComment = this.submitComment.bind(this)
 	}
 
@@ -36,27 +36,34 @@ export default class CommentList extends React.Component {
      		 .then(comments_data => {
 				let comments = comments_data.comments;
 				return comments.map((comment) => {
-					   	return { 
-								body: comment.CONTENT, 
-								author: comment.FULL_NAME, 
-								date: comment.CREATED_AT}
+					   	return {
+								body: comment.CONTENT,
+								author: comment.FULL_NAME,
+								date: comment.CREATED_AT
+                        }
 				} );
 			});
-	
+
 	}
-	
+
 	render(){
-		console.log(this.state.comments)
-		var commentNodes =Array.from(this.state.comments).map(
+		let commentNodes = Array.from(this.state.comments).map(
 						(comment) => (
-							<Comment author={comment.author} body={comment.body}/>
+							<Comment author={comment.author} body={comment.body} date={comment.date}/>
 						));
-		return (
-			<React.Fragment>
-				{commentNodes}
-           		{this.renderCommentBox()}
-			</React.Fragment>
-		);
+
+        if (commentNodes.length) {
+            return (
+                <React.Fragment>
+                <div className='comments-list'>
+                {commentNodes}
+                </div>
+                {this.renderCommentBox()}
+                </React.Fragment>);
+        }
+        return (
+            this.renderCommentBox()
+        );
 	}
 
      async submitComment() {

@@ -5,6 +5,7 @@ import { Form, Button } from 'react-bootstrap';
 
 import CommentList from './CommentList'
 import './post.css'
+import LikeToggleButton from './ToggleLikeButton'
 
 import moment from 'moment'
 
@@ -39,7 +40,10 @@ export default class Post extends Component {
             {this.props.content}
           </div>
         </div>
-		<div className="comment-list">
+          <LikeToggleButton likes={this.props.likes} postId={this.props.postId} clientId={this.props.clientId}/>
+
+		<div className="comment-section">
+          <h5>Comments</h5>
 			<CommentList postId={this.props.postId} clientId={this.props.clientId}/>
 		</div>
 	  </div>

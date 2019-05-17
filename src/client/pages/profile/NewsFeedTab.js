@@ -6,7 +6,7 @@ import { errorsBlock, loadingBlock } from '../../Util';
 
 import Post from './Post'
 
-export default class TimelineTab extends Component {
+export default class NewsFeedTab extends Component {
 
   state = {
     isLoading: true
@@ -39,7 +39,7 @@ export default class TimelineTab extends Component {
   }
 
   getAllPosts() {
-    return fetch('/api/get_posts_by_user?userId=' + this.props.profileId,
+    return fetch('/api/get_news_feed?userId=' + this.props.profileId,
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
@@ -113,7 +113,7 @@ export default class TimelineTab extends Component {
   }
 }
 
-TimelineTab.props = {
+NewsFeedTab.props = {
   profileId: PropTypes.string.isRequired,
   clientId: PropTypes.string.isRequired,
   fullName: PropTypes.string
