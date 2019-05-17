@@ -57,5 +57,5 @@ Post.propTypes = {
   content: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  postId: PropTypes.int.isRequired
+  postId: PropTypes.number.isRequired
 };

@@ -15,7 +15,7 @@ describe('Post UI Component', () => {
   beforeAll(() => {
     wrapper = mount(
       <HashRouter>
-        <Post writer={writer} email={email} content={content} date={date}/>
+        <Post postId={1} writer={writer} email={email} content={content} date={date}/>
       </HashRouter>
     );
   });
