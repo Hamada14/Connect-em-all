@@ -29,24 +29,15 @@ export default class NewsFeedTab extends Component {
     this.setState({ posts: posts, isLoading: false });
   }
 
-
-  async componentDidUpdate(prevProps) {
-    if(this.props.profileId != prevProps.profileId) {
-      this.setState({ isLoading: true, posts: [], newPostContent: '' });
-      let posts = await this.getAllPosts();
-      this.setState({ posts: posts, isLoading: false });
-    }
-  }
-
   getAllPosts() {
-    return fetch('/api/get_news_feed?userId=' + this.props.profileId,
+    return fetch('/api/get_news_feed?userId=' + this.props.clientId,
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       }).then(res => res.json())
       .then(posts_data => {
         let posts = posts_data.posts;
-        return posts.map((post) => { return { profileId: this.props.profileId, writer: post.FULL_NAME, content: post.CONTENT, date: post.CREATED_AT, email: post.EMAIL, likesCount: post.LIKES_COUNT, likes: post.LIKES, likers: post.LIKERS, postId: post.POST_ID, userId: post.USER_ID }} );
+        return posts.map((post) => { return { clientId: this.props.clientId, writer: post.FULL_NAME, content: post.CONTENT, date: post.CREATED_AT, email: post.EMAIL, likesCount: post.LIKES_COUNT, likes: post.LIKES, postId: post.POST_ID, userId: post.USER_ID }} );
       });
   }
 
@@ -66,9 +57,6 @@ export default class NewsFeedTab extends Component {
   }
 
   renderCreatePostBlock() {
-    if(this.props.profileId != this.props.clientId) {
-      return;
-    }
     return (
       <>
         <Form>
@@ -114,7 +102,6 @@ export default class NewsFeedTab extends Component {
 }
 
 NewsFeedTab.props = {
-  profileId: PropTypes.string.isRequired,
   clientId: PropTypes.string.isRequired,
   fullName: PropTypes.string
 }

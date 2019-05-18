@@ -55,27 +55,145 @@ describe('Get newsfeed for a user tests', () => {
   })
 
   it('Get empty posts test', async() => {
-    databaseHandler.getPostsByUser.mockReturnValue([])
+    databaseHandler.getNewsFeedForUser.mockReturnValue([])
     const postManager = new PostManager()
-    let posts = await postManager.getPostsByUser(1);
+    let posts = await postManager.getNewsFeedForUser(1);
     expect(posts).toEqual([])
-    expect(databaseHandler.getPostsByUser).toBeCalled()
+    expect(databaseHandler.getNewsFeedForUser).toBeCalled()
   })
 
   it('Get non-empty list of posts', async() => {
     let mockPost1 = {POST_ID: 1, CONTENT: 'this is the content1', USER_ID: 1}
     let mockPost2 = {POST_ID: 2, CONTENT: 'this is the content1', USER_ID: 1}
     let mockPosts = [mockPost1, mockPost2]
-    databaseHandler.getPostsByUser.mockReturnValue([mockPost1, mockPost2])
+    databaseHandler.getNewsFeedForUser.mockReturnValue([mockPost1, mockPost2])
     let postManager = new PostManager()
-    let actualPosts = await postManager.getPostsByUser(1)
+    let actualPosts = await postManager.getNewsFeedForUser(1)
     actualPosts.sort((a, b) => a.POST_ID - b.POST_ID)
     expect(actualPosts).toEqual(mockPosts)
-    expect(databaseHandler.getPostsByUser).toBeCalled()
+    expect(databaseHandler.getNewsFeedForUser).toBeCalled()
   })
 
 })
 
+
+describe('Toggle like tests', () => {
+
+  const databaseHandler = require('server/database_handler')
+  const postId = 1;
+  const userId1 = 123;
+  const userId2 = 1234;
+  const userId3 = 12345;
+
+  beforeEach(() => {
+    jest.setTimeout(5000);
+  });
+
+  beforeAll(() => {
+    databaseHandler.likePost = jest.fn()
+    databaseHandler.unlikePost = jest.fn()
+    databaseHandler.getPostLikes = jest.fn()
+    databaseHandler.isPostLikedByUser = jest.fn()
+
+  })
+
+  it('adds like for a post', async() => {
+    let postManager = new PostManager();
+
+    databaseHandler.likePost.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve(true);
+        }))
+
+    databaseHandler.getPostLikes.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve({LIKES:userId1.toString()});
+        }))
+
+    databaseHandler.isPostLikedByUser.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve(false);
+        }))
+
+    let likes = await postManager.toggleLike(postId, userId1);
+
+    expect(likes.LIKES).toBe(userId1.toString())
+
+    expect(databaseHandler.isPostLikedByUser).toBeCalled()
+    expect(databaseHandler.likePost).toBeCalled()
+    expect(databaseHandler.getPostLikes).toBeCalled()
+  })
+
+  it('removes like for a post', async() => {
+    let postManager = new PostManager();
+
+    databaseHandler.unlikePost.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve(true);
+        }))
+
+    databaseHandler.getPostLikes.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve({});
+        }))
+
+    databaseHandler.isPostLikedByUser.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve(true);
+        }))
+
+    let likes = await postManager.toggleLike(postId, userId1);
+
+    expect(likes.LIKES).toBe(undefined)
+
+    expect(databaseHandler.isPostLikedByUser).toBeCalled()
+    expect(databaseHandler.unlikePost).toBeCalled()
+    expect(databaseHandler.getPostLikes).toBeCalled()
+  })
+
+  it('count multiple likes for a post', async() => {
+    let postManager = new PostManager();
+
+    databaseHandler.likePost.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve(true);
+        }))
+
+    databaseHandler.getPostLikes
+          .mockReturnValueOnce(
+              new Promise((resolve, rej) => {
+                  resolve({LIKES:userId1.toString()});
+              }))
+          .mockReturnValueOnce(
+              new Promise((resolve, rej) => {
+                  resolve({LIKES:userId1.toString() + "," + userId2.toString()});
+              }))
+          .mockReturnValueOnce(
+              new Promise((resolve, rej) => {
+                  resolve({LIKES:userId1.toString() + "," + userId2.toString() + "," + userId3.toString()});
+              }))
+
+    databaseHandler.isPostLikedByUser.mockReturnValue(
+        new Promise((resolve, rej) => {
+            resolve(false);
+        }))
+
+    let likes;
+
+    likes = await postManager.toggleLike(postId, userId1);
+    expect(likes.LIKES).toBe(userId1.toString())
+
+    likes = await postManager.toggleLike(postId, userId2);
+    expect(likes.LIKES).toBe(userId1.toString() + "," + userId2.toString())
+
+    likes = await postManager.toggleLike(postId, userId3);
+    expect(likes.LIKES).toBe(userId1.toString() + "," + userId2.toString() + "," + userId3.toString())
+
+    expect(databaseHandler.isPostLikedByUser).toHaveBeenCalledTimes(3)
+    expect(databaseHandler.likePost).toHaveBeenCalledTimes(3)
+    expect(databaseHandler.getPostLikes).toHaveBeenCalledTimes(3)
+  })
+})
 
 describe('Add comment tests', () => {
 

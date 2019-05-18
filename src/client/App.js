@@ -102,7 +102,7 @@ export default class App extends Component {
       <div className="newsFeed">
         <Card>
           <Card.Body>
-            <NewsFeedTab profileId={this.state.userId} clientId={this.state.userId} fullName={fullName} />
+            <NewsFeedTab clientId={this.state.userId} fullName={fullName} />
           </Card.Body>
         </Card>
       </div>

@@ -131,7 +131,6 @@ describe("Validate new password", () => {
             }
         };
         let errors = await userManager.validateNewInfo(session, newInfo);
-        console.log(errors)
         expect(errors.length).toEqual(0);
     });
 
@@ -151,7 +150,7 @@ describe("Validate new password", () => {
             }
         };
         let errors = await userManager.validateNewInfo(session, newInfo);
-        
+
         expect(errors.length).toEqual(1);
         expect(errors[0]).toEqual(userManager.WRONG_PASSWORD);
     });

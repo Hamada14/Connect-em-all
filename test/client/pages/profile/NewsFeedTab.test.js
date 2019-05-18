@@ -3,10 +3,9 @@ import { shallow, mount } from 'enzyme';
 import { Link, HashRouter } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap';
 
-import TimelineTab from "client/pages/profile/TimelineTab";
+import NewsFeedTab from "client/pages/profile/NewsFeedTab";
 import Post from "client/pages/profile/Post";
 
-const profileId = 5;
 const clientId = 5;
 
 const name1 = 'name1';
@@ -20,11 +19,11 @@ const email2 = 'email2';
 const date2 = '2019-04-22 16:48:17'
 
 const posts = [
-  {POST_ID: 1, FULL_NAME:name1, CONTENT:content1, EMAIL:email1, CREATED_AT:date1},
-  {POST_ID: 2, FULL_NAME:name2, CONTENT:content2, EMAIL:email2, CREATED_AT:date2}
+  {POST_ID: 1, USER_ID: 1, FULL_NAME:name1, CONTENT:content1, EMAIL:email1, CREATED_AT:date1},
+  {POST_ID: 2, USER_ID: 2, FULL_NAME:name2, CONTENT:content2, EMAIL:email2, CREATED_AT:date2}
 ];
 
-describe('Timeline UI Component', () => {
+describe('NewsFeed UI Component', () => {
   let wrapper;
   let callParams;
 
@@ -38,7 +37,7 @@ describe('Timeline UI Component', () => {
 
     wrapper = mount(
       <HashRouter>
-        <TimelineTab clientId={clientId} profileId={profileId} areFriends/>
+        <NewsFeedTab clientId={clientId}/>
       </HashRouter>
     );
 
@@ -52,8 +51,8 @@ describe('Timeline UI Component', () => {
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 
-  it('Sends a request to /api/get_posts_by_user?userId=' + profileId, () => {
-    expect(callParams[0]).toEqual('/api/get_posts_by_user?userId=' + profileId);
+  it('Sends a request to /api/get_news_feed?userId=' + clientId, () => {
+    expect(callParams[0]).toEqual('/api/get_news_feed?userId=' + clientId);
   });
 
   it('sends a post request', () => {
