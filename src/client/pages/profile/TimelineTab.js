@@ -84,11 +84,15 @@ export default class TimelineTab extends Component {
           </Form.Group>
           <Button type="submit" onClick={this.submitPost}>Submit Post</Button>
         </Form>
+        <hr />
       </>
     )
   }
 
   renderPosts() {
+    if(!this.props.areFriends) {
+      return 'You must be friends to view the user posts.';
+    }
     return (
       <>
         {this.state.posts.map((post, idx) => (
@@ -105,7 +109,6 @@ export default class TimelineTab extends Component {
     return (
       <React.Fragment>
         {this.renderCreatePostBlock()}
-        <hr />
         {this.renderPosts()}
         {loadingBlock(this.state.isLoading)}
       </React.Fragment>

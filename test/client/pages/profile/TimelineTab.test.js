@@ -38,7 +38,7 @@ describe('Timeline UI Component', () => {
 
     wrapper = mount(
       <HashRouter>
-        <TimelineTab clientId={clientId} profileId={profileId}/>
+        <TimelineTab clientId={clientId} profileId={profileId} areFriends/>
       </HashRouter>
     );
 

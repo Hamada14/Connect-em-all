@@ -230,6 +230,7 @@ export default class ProfilePage extends Component {
           clientId={this.props.clientId}
           profileId={this.props.profileId}
           fullName={this.props.fullName}
+          areFriends={this.state.areFriends}
         />
       );
     } else if(this.state.currentTab == TABS.FRIENDS) {
